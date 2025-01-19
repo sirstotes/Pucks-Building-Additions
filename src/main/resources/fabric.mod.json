@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "pucks_building_additions",
+	"version": "${version}",
+	"name": "Puck's Building Additions",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/pucks_building_additions/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"sirstotes.pucks_building_additions.PucksBuildingAdditions"
+		],
+		"client": [
+			"sirstotes.pucks_building_additions.PucksBuildingAdditionsClient"
+		],
+		"fabric-datagen": [
+			"sirstotes.pucks_building_additions.PucksBuildingAdditionsDataGenerator"
+		]
+	},
+	"mixins": [
+		"pucks_building_additions.mixins.json",
+		{
+			"config": "pucks_building_additions.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
