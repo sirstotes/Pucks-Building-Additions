@@ -1,0 +1,7 @@
+{
+  "parent": "pucks_building_additions:block/large_flower_pot_full_tinted",
+  "textures": {
+    "top": "minecraft:block/tall_grass_top",
+    "bottom": "minecraft:block/tall_grass_bottom"
+  }
+}

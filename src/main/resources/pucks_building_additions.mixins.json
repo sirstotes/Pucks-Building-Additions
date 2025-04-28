@@ -1,11 +1,13 @@
 {
-	"required": true,
-	"package": "sirstotes.pucks_building_additions.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"ExampleMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "sirstotes.pucks_building_additions.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CarpetBlockMixin",
+    "FireBlockMixin",
+    "ItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

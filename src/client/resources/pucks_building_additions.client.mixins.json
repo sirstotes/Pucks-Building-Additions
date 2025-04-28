@@ -1,11 +1,12 @@
 {
-	"required": true,
-	"package": "sirstotes.pucks_building_additions.mixin.client",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"ExampleClientMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "sirstotes.pucks_building_additions.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "BlockColorsMixin",
+    "ExampleClientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }
