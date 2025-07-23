@@ -1,0 +1,8 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "pucks_building_additions:block/collapsed_cardboard",
+	"textures": {
+		"0": "pucks_building_additions:block/wet_cardboardside2",
+		"particle": "pucks_building_additions:block/wet_cardboardside2"
+	}
+}

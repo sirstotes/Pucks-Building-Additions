@@ -4,18 +4,24 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
+import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +53,7 @@ public class PucksBuildingAdditionsBlocks {
     }
 
     public static ColoredFlowerPotBlock[] registerFlowerPots(String color) {
-        ColoredFlowerPotBlock parent = (ColoredFlowerPotBlock) register(color + "_flower_pot", (settings) -> new ColoredFlowerPotBlock(Blocks.AIR, settings, "flower_pot"), Blocks.createFlowerPotSettings(), true);
+        ColoredFlowerPotBlock parent = (ColoredFlowerPotBlock) register(color + "_flower_pot", (settings) -> new ColoredFlowerPotBlock(null, settings, "flower_pot"), Blocks.createFlowerPotSettings(), true);
         return new ColoredFlowerPotBlock[] {
                 parent,
                 (ColoredFlowerPotBlock) register(color + "_potted_fern", (settings) -> new ColoredFlowerPotBlock(Blocks.FERN, parent, settings, "potted_fern"), Blocks.createFlowerPotSettings(), false),
@@ -116,43 +122,45 @@ public class PucksBuildingAdditionsBlocks {
         return Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(PucksBuildingAdditions.MOD_ID, path), blockEntityType);
     }
 
-    public static final SittableBlock OAK_BENCH = (SittableBlock) register("oak_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock OAK_SEAT = (SittableBlock) register("oak_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock OAK_STOOL = (SittableBlock) register("oak_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock SPRUCE_BENCH = (SittableBlock) register("spruce_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock SPRUCE_SEAT = (SittableBlock) register("spruce_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock SPRUCE_STOOL = (SittableBlock) register("spruce_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock BIRCH_BENCH = (SittableBlock) register("birch_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock BIRCH_SEAT = (SittableBlock) register("birch_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BIRCH_STOOL = (SittableBlock) register("birch_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock JUNGLE_BENCH = (SittableBlock) register("jungle_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock JUNGLE_SEAT = (SittableBlock) register("jungle_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock JUNGLE_STOOL = (SittableBlock) register("jungle_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock ACACIA_BENCH = (SittableBlock) register("acacia_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock ACACIA_SEAT = (SittableBlock) register("acacia_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock ACACIA_STOOL = (SittableBlock) register("acacia_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock DARK_OAK_BENCH = (SittableBlock) register("dark_oak_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock DARK_OAK_SEAT = (SittableBlock) register("dark_oak_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock DARK_OAK_STOOL = (SittableBlock) register("dark_oak_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock MANGROVE_BENCH = (SittableBlock) register("mangrove_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock MANGROVE_SEAT = (SittableBlock) register("mangrove_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock MANGROVE_STOOL = (SittableBlock) register("mangrove_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock CHERRY_BENCH = (SittableBlock) register("cherry_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock CHERRY_SEAT = (SittableBlock) register("cherry_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock CHERRY_STOOL = (SittableBlock) register("cherry_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock PALE_OAK_BENCH = (SittableBlock) register("pale_oak_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock PALE_OAK_SEAT = (SittableBlock) register("pale_oak_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock PALE_OAK_STOOL = (SittableBlock) register("pale_oak_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock CRIMSON_BENCH = (SittableBlock) register("crimson_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock CRIMSON_SEAT = (SittableBlock) register("crimson_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock CRIMSON_STOOL = (SittableBlock) register("crimson_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock WARPED_BENCH = (SittableBlock) register("warped_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock WARPED_SEAT = (SittableBlock) register("warped_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock WARPED_STOOL = (SittableBlock) register("warped_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock BAMBOO_BENCH = (SittableBlock) register("bamboo_bench", SittableBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.IGNORE), true);
-    public static final SittableBlock BAMBOO_SEAT = (SittableBlock) register("bamboo_seat", BackedSittableBlock::new, AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BAMBOO_STOOL = (SittableBlock) register("bamboo_stool", StoolBlock::new, AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
+    private static final AbstractBlock.Settings woodenSettings = AbstractBlock.Settings.create().strength(2.0F).sounds(BlockSoundGroup.WOOD).burnable().pistonBehavior(PistonBehavior.IGNORE);
+    public static final SittableBlock OAK_BENCH = (SittableBlock) register("oak_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock OAK_SEAT = (SittableBlock) register("oak_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock OAK_STOOL = (SittableBlock) register("oak_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock SPRUCE_BENCH = (SittableBlock) register("spruce_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock SPRUCE_SEAT = (SittableBlock) register("spruce_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock SPRUCE_STOOL = (SittableBlock) register("spruce_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock BIRCH_BENCH = (SittableBlock) register("birch_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock BIRCH_SEAT = (SittableBlock) register("birch_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock BIRCH_STOOL = (SittableBlock) register("birch_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock JUNGLE_BENCH = (SittableBlock) register("jungle_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock JUNGLE_SEAT = (SittableBlock) register("jungle_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock JUNGLE_STOOL = (SittableBlock) register("jungle_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock ACACIA_BENCH = (SittableBlock) register("acacia_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock ACACIA_SEAT = (SittableBlock) register("acacia_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock ACACIA_STOOL = (SittableBlock) register("acacia_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock DARK_OAK_BENCH = (SittableBlock) register("dark_oak_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock DARK_OAK_SEAT = (SittableBlock) register("dark_oak_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock DARK_OAK_STOOL = (SittableBlock) register("dark_oak_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock MANGROVE_BENCH = (SittableBlock) register("mangrove_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock MANGROVE_SEAT = (SittableBlock) register("mangrove_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock MANGROVE_STOOL = (SittableBlock) register("mangrove_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock CHERRY_BENCH = (SittableBlock) register("cherry_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock CHERRY_SEAT = (SittableBlock) register("cherry_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock CHERRY_STOOL = (SittableBlock) register("cherry_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock PALE_OAK_BENCH = (SittableBlock) register("pale_oak_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock PALE_OAK_SEAT = (SittableBlock) register("pale_oak_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock PALE_OAK_STOOL = (SittableBlock) register("pale_oak_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock CRIMSON_BENCH = (SittableBlock) register("crimson_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock CRIMSON_SEAT = (SittableBlock) register("crimson_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock CRIMSON_STOOL = (SittableBlock) register("crimson_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock WARPED_BENCH = (SittableBlock) register("warped_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock WARPED_SEAT = (SittableBlock) register("warped_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock WARPED_STOOL = (SittableBlock) register("warped_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock BAMBOO_BENCH = (SittableBlock) register("bamboo_bench", SittableBlock::new, woodenSettings, true);
+    public static final SittableBlock BAMBOO_SEAT = (SittableBlock) register("bamboo_seat", BackedSittableBlock::new, woodenSettings, true);
+    public static final SittableBlock BAMBOO_STOOL = (SittableBlock) register("bamboo_stool", StoolBlock::new, woodenSettings.pistonBehavior(PistonBehavior.DESTROY), true);
 
+    public static final TagKey<Item> FLOWER_POT_ITEM_TAG = TagRegistration.ITEM_TAG.registerFabric("flower_pot");
     public static final ColoredFlowerPotBlock[] RED_FLOWER_POTS = registerFlowerPots("red");
     public static final ColoredFlowerPotBlock[] ORANGE_FLOWER_POTS = registerFlowerPots("orange");
     public static final ColoredFlowerPotBlock[] YELLOW_FLOWER_POTS = registerFlowerPots("yellow");
@@ -170,6 +178,7 @@ public class PucksBuildingAdditionsBlocks {
     public static final ColoredFlowerPotBlock[] GRAY_FLOWER_POTS = registerFlowerPots("gray");
     public static final ColoredFlowerPotBlock[] BLACK_FLOWER_POTS = registerFlowerPots("black");
 
+    public static final TagKey<Item> LARGE_FLOWER_POT_ITEM_TAG = TagRegistration.ITEM_TAG.registerFabric("large_flower_pot");
     public static final LargeFlowerPotBlock[] LARGE_FLOWER_POTS = registerLargeFlowerPots("");
     public static final LargeFlowerPotBlock[] RED_LARGE_FLOWER_POTS = registerLargeFlowerPots("red_");
     public static final LargeFlowerPotBlock[] ORANGE_LARGE_FLOWER_POTS = registerLargeFlowerPots("orange_");
@@ -188,6 +197,7 @@ public class PucksBuildingAdditionsBlocks {
     public static final LargeFlowerPotBlock[] GRAY_LARGE_FLOWER_POTS = registerLargeFlowerPots("gray_");
     public static final LargeFlowerPotBlock[] BLACK_LARGE_FLOWER_POTS = registerLargeFlowerPots("black_");
 
+    public static final TagKey<Item> HANGING_FLOWER_POT_ITEM_TAG = TagRegistration.ITEM_TAG.registerFabric("hanging_flower_pot");
     public static final HangingFlowerPotBlock[] HANGING_FLOWER_POTS = registerHangingFlowerPots("");
     public static final HangingFlowerPotBlock[] RED_HANGING_FLOWER_POTS = registerHangingFlowerPots("red_");
     public static final HangingFlowerPotBlock[] ORANGE_HANGING_FLOWER_POTS = registerHangingFlowerPots("orange_");
@@ -223,73 +233,74 @@ public class PucksBuildingAdditionsBlocks {
     public static final DecoratedPotBlock GRAY_DECORATED_POT = (DecoratedPotBlock) register("gray_decorated_pot", (settings) -> new DecoratedPotBlock(settings) {@Override public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {return new ColoredDecoratedPotBlockEntity(pos, state, "gray");}}, AbstractBlock.Settings.create().mapColor(MapColor.TERRACOTTA_GRAY).strength(0.0F, 0.0F).pistonBehavior(PistonBehavior.DESTROY).nonOpaque(), true);
     public static final DecoratedPotBlock BLACK_DECORATED_POT = (DecoratedPotBlock) register("black_decorated_pot", (settings) -> new DecoratedPotBlock(settings) {@Override public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {return new ColoredDecoratedPotBlockEntity(pos, state, "black");}}, AbstractBlock.Settings.create().mapColor(MapColor.TERRACOTTA_BLACK).strength(0.0F, 0.0F).pistonBehavior(PistonBehavior.DESTROY).nonOpaque(), true);
 
-    public static final SittableBlock RED_CUSHION = (SittableBlock) register("red_cushion", (settings) -> new WoolCushionBlock(DyeColor.RED, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock ORANGE_CUSHION = (SittableBlock) register("orange_cushion", (settings) -> new WoolCushionBlock(DyeColor.ORANGE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock YELLOW_CUSHION = (SittableBlock) register("yellow_cushion", (settings) -> new WoolCushionBlock(DyeColor.YELLOW, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIME_CUSHION = (SittableBlock) register("lime_cushion", (settings) -> new WoolCushionBlock(DyeColor.LIME, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock GREEN_CUSHION = (SittableBlock) register("green_cushion", (settings) -> new WoolCushionBlock(DyeColor.GREEN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock CYAN_CUSHION = (SittableBlock) register("cyan_cushion", (settings) -> new WoolCushionBlock(DyeColor.CYAN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIGHT_BLUE_CUSHION = (SittableBlock) register("light_blue_cushion", (settings) -> new WoolCushionBlock(DyeColor.LIGHT_BLUE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BLUE_CUSHION = (SittableBlock) register("blue_cushion", (settings) -> new WoolCushionBlock(DyeColor.BLUE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock PURPLE_CUSHION = (SittableBlock) register("purple_cushion", (settings) -> new WoolCushionBlock(DyeColor.PURPLE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock MAGENTA_CUSHION = (SittableBlock) register("magenta_cushion", (settings) -> new WoolCushionBlock(DyeColor.MAGENTA, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock PINK_CUSHION = (SittableBlock) register("pink_cushion", (settings) -> new WoolCushionBlock(DyeColor.PINK, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BROWN_CUSHION = (SittableBlock) register("brown_cushion", (settings) -> new WoolCushionBlock(DyeColor.BROWN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock WHITE_CUSHION = (SittableBlock) register("white_cushion", (settings) -> new WoolCushionBlock(DyeColor.WHITE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIGHT_GRAY_CUSHION = (SittableBlock) register("light_gray_cushion", (settings) -> new WoolCushionBlock(DyeColor.LIGHT_GRAY, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock GRAY_CUSHION = (SittableBlock) register("gray_cushion", (settings) -> new WoolCushionBlock(DyeColor.GRAY, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BLACK_CUSHION = (SittableBlock) register("black_cushion", (settings) -> new WoolCushionBlock(DyeColor.BLACK, settings), AbstractBlock.Settings.create(), true);
+    private static final AbstractBlock.Settings woolSeatSettings = AbstractBlock.Settings.create().sounds(BlockSoundGroup.WOOD).strength(0.2F).nonOpaque().burnable().pistonBehavior(PistonBehavior.DESTROY);
+    public static final SittableBlock RED_CUSHION = (SittableBlock) register("red_cushion", (settings) -> new WoolCushionBlock(DyeColor.RED, settings), woolSeatSettings, true);
+    public static final SittableBlock ORANGE_CUSHION = (SittableBlock) register("orange_cushion", (settings) -> new WoolCushionBlock(DyeColor.ORANGE, settings), woolSeatSettings, true);
+    public static final SittableBlock YELLOW_CUSHION = (SittableBlock) register("yellow_cushion", (settings) -> new WoolCushionBlock(DyeColor.YELLOW, settings), woolSeatSettings, true);
+    public static final SittableBlock LIME_CUSHION = (SittableBlock) register("lime_cushion", (settings) -> new WoolCushionBlock(DyeColor.LIME, settings), woolSeatSettings, true);
+    public static final SittableBlock GREEN_CUSHION = (SittableBlock) register("green_cushion", (settings) -> new WoolCushionBlock(DyeColor.GREEN, settings), woolSeatSettings, true);
+    public static final SittableBlock CYAN_CUSHION = (SittableBlock) register("cyan_cushion", (settings) -> new WoolCushionBlock(DyeColor.CYAN, settings), woolSeatSettings, true);
+    public static final SittableBlock LIGHT_BLUE_CUSHION = (SittableBlock) register("light_blue_cushion", (settings) -> new WoolCushionBlock(DyeColor.LIGHT_BLUE, settings), woolSeatSettings, true);
+    public static final SittableBlock BLUE_CUSHION = (SittableBlock) register("blue_cushion", (settings) -> new WoolCushionBlock(DyeColor.BLUE, settings), woolSeatSettings, true);
+    public static final SittableBlock PURPLE_CUSHION = (SittableBlock) register("purple_cushion", (settings) -> new WoolCushionBlock(DyeColor.PURPLE, settings), woolSeatSettings, true);
+    public static final SittableBlock MAGENTA_CUSHION = (SittableBlock) register("magenta_cushion", (settings) -> new WoolCushionBlock(DyeColor.MAGENTA, settings), woolSeatSettings, true);
+    public static final SittableBlock PINK_CUSHION = (SittableBlock) register("pink_cushion", (settings) -> new WoolCushionBlock(DyeColor.PINK, settings), woolSeatSettings, true);
+    public static final SittableBlock BROWN_CUSHION = (SittableBlock) register("brown_cushion", (settings) -> new WoolCushionBlock(DyeColor.BROWN, settings), woolSeatSettings, true);
+    public static final SittableBlock WHITE_CUSHION = (SittableBlock) register("white_cushion", (settings) -> new WoolCushionBlock(DyeColor.WHITE, settings), woolSeatSettings, true);
+    public static final SittableBlock LIGHT_GRAY_CUSHION = (SittableBlock) register("light_gray_cushion", (settings) -> new WoolCushionBlock(DyeColor.LIGHT_GRAY, settings), woolSeatSettings, true);
+    public static final SittableBlock GRAY_CUSHION = (SittableBlock) register("gray_cushion", (settings) -> new WoolCushionBlock(DyeColor.GRAY, settings), woolSeatSettings, true);
+    public static final SittableBlock BLACK_CUSHION = (SittableBlock) register("black_cushion", (settings) -> new WoolCushionBlock(DyeColor.BLACK, settings), woolSeatSettings, true);
 
-    public static final SittableBlock RED_OTTOMAN = (SittableBlock) register("red_ottoman", (settings) -> new WoolSittableBlock(DyeColor.RED, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock ORANGE_OTTOMAN = (SittableBlock) register("orange_ottoman", (settings) -> new WoolSittableBlock(DyeColor.ORANGE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock YELLOW_OTTOMAN = (SittableBlock) register("yellow_ottoman", (settings) -> new WoolSittableBlock(DyeColor.YELLOW, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIME_OTTOMAN = (SittableBlock) register("lime_ottoman", (settings) -> new WoolSittableBlock(DyeColor.LIME, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock GREEN_OTTOMAN = (SittableBlock) register("green_ottoman", (settings) -> new WoolSittableBlock(DyeColor.GREEN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock CYAN_OTTOMAN = (SittableBlock) register("cyan_ottoman", (settings) -> new WoolSittableBlock(DyeColor.CYAN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIGHT_BLUE_OTTOMAN = (SittableBlock) register("light_blue_ottoman", (settings) -> new WoolSittableBlock(DyeColor.LIGHT_BLUE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BLUE_OTTOMAN = (SittableBlock) register("blue_ottoman", (settings) -> new WoolSittableBlock(DyeColor.BLUE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock PURPLE_OTTOMAN = (SittableBlock) register("purple_ottoman", (settings) -> new WoolSittableBlock(DyeColor.PURPLE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock MAGENTA_OTTOMAN = (SittableBlock) register("magenta_ottoman", (settings) -> new WoolSittableBlock(DyeColor.MAGENTA, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock PINK_OTTOMAN = (SittableBlock) register("pink_ottoman", (settings) -> new WoolSittableBlock(DyeColor.PINK, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BROWN_OTTOMAN = (SittableBlock) register("brown_ottoman", (settings) -> new WoolSittableBlock(DyeColor.BROWN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock WHITE_OTTOMAN = (SittableBlock) register("white_ottoman", (settings) -> new WoolSittableBlock(DyeColor.WHITE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIGHT_GRAY_OTTOMAN = (SittableBlock) register("light_gray_ottoman", (settings) -> new WoolSittableBlock(DyeColor.LIGHT_GRAY, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock GRAY_OTTOMAN = (SittableBlock) register("gray_ottoman", (settings) -> new WoolSittableBlock(DyeColor.GRAY, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BLACK_OTTOMAN = (SittableBlock) register("black_ottoman", (settings) -> new WoolSittableBlock(DyeColor.BLACK, settings), AbstractBlock.Settings.create(), true);
+    public static final SittableBlock RED_OTTOMAN = (SittableBlock) register("red_ottoman", (settings) -> new WoolSittableBlock(DyeColor.RED, settings), woolSeatSettings, true);
+    public static final SittableBlock ORANGE_OTTOMAN = (SittableBlock) register("orange_ottoman", (settings) -> new WoolSittableBlock(DyeColor.ORANGE, settings), woolSeatSettings, true);
+    public static final SittableBlock YELLOW_OTTOMAN = (SittableBlock) register("yellow_ottoman", (settings) -> new WoolSittableBlock(DyeColor.YELLOW, settings), woolSeatSettings, true);
+    public static final SittableBlock LIME_OTTOMAN = (SittableBlock) register("lime_ottoman", (settings) -> new WoolSittableBlock(DyeColor.LIME, settings), woolSeatSettings, true);
+    public static final SittableBlock GREEN_OTTOMAN = (SittableBlock) register("green_ottoman", (settings) -> new WoolSittableBlock(DyeColor.GREEN, settings), woolSeatSettings, true);
+    public static final SittableBlock CYAN_OTTOMAN = (SittableBlock) register("cyan_ottoman", (settings) -> new WoolSittableBlock(DyeColor.CYAN, settings), woolSeatSettings, true);
+    public static final SittableBlock LIGHT_BLUE_OTTOMAN = (SittableBlock) register("light_blue_ottoman", (settings) -> new WoolSittableBlock(DyeColor.LIGHT_BLUE, settings), woolSeatSettings, true);
+    public static final SittableBlock BLUE_OTTOMAN = (SittableBlock) register("blue_ottoman", (settings) -> new WoolSittableBlock(DyeColor.BLUE, settings), woolSeatSettings, true);
+    public static final SittableBlock PURPLE_OTTOMAN = (SittableBlock) register("purple_ottoman", (settings) -> new WoolSittableBlock(DyeColor.PURPLE, settings), woolSeatSettings, true);
+    public static final SittableBlock MAGENTA_OTTOMAN = (SittableBlock) register("magenta_ottoman", (settings) -> new WoolSittableBlock(DyeColor.MAGENTA, settings), woolSeatSettings, true);
+    public static final SittableBlock PINK_OTTOMAN = (SittableBlock) register("pink_ottoman", (settings) -> new WoolSittableBlock(DyeColor.PINK, settings), woolSeatSettings, true);
+    public static final SittableBlock BROWN_OTTOMAN = (SittableBlock) register("brown_ottoman", (settings) -> new WoolSittableBlock(DyeColor.BROWN, settings), woolSeatSettings, true);
+    public static final SittableBlock WHITE_OTTOMAN = (SittableBlock) register("white_ottoman", (settings) -> new WoolSittableBlock(DyeColor.WHITE, settings), woolSeatSettings, true);
+    public static final SittableBlock LIGHT_GRAY_OTTOMAN = (SittableBlock) register("light_gray_ottoman", (settings) -> new WoolSittableBlock(DyeColor.LIGHT_GRAY, settings), woolSeatSettings, true);
+    public static final SittableBlock GRAY_OTTOMAN = (SittableBlock) register("gray_ottoman", (settings) -> new WoolSittableBlock(DyeColor.GRAY, settings), woolSeatSettings, true);
+    public static final SittableBlock BLACK_OTTOMAN = (SittableBlock) register("black_ottoman", (settings) -> new WoolSittableBlock(DyeColor.BLACK, settings), woolSeatSettings, true);
 
-    public static final SittableBlock RED_SEAT = (SittableBlock) register("red_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.RED, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock ORANGE_SEAT = (SittableBlock) register("orange_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.ORANGE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock YELLOW_SEAT = (SittableBlock) register("yellow_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.YELLOW, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIME_SEAT = (SittableBlock) register("lime_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.LIME, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock GREEN_SEAT = (SittableBlock) register("green_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.GREEN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock CYAN_SEAT = (SittableBlock) register("cyan_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.CYAN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIGHT_BLUE_SEAT = (SittableBlock) register("light_blue_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.LIGHT_BLUE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BLUE_SEAT = (SittableBlock) register("blue_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.BLUE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock PURPLE_SEAT = (SittableBlock) register("purple_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.PURPLE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock MAGENTA_SEAT = (SittableBlock) register("magenta_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.MAGENTA, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock PINK_SEAT = (SittableBlock) register("pink_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.PINK, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BROWN_SEAT = (SittableBlock) register("brown_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.BROWN, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock WHITE_SEAT = (SittableBlock) register("white_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.WHITE, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock LIGHT_GRAY_SEAT = (SittableBlock) register("light_gray_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.LIGHT_GRAY, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock GRAY_SEAT = (SittableBlock) register("gray_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.GRAY, settings), AbstractBlock.Settings.create(), true);
-    public static final SittableBlock BLACK_SEAT = (SittableBlock) register("black_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.BLACK, settings), AbstractBlock.Settings.create(), true);
+    public static final SittableBlock RED_SEAT = (SittableBlock) register("red_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.RED, settings), woolSeatSettings, true);
+    public static final SittableBlock ORANGE_SEAT = (SittableBlock) register("orange_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.ORANGE, settings), woolSeatSettings, true);
+    public static final SittableBlock YELLOW_SEAT = (SittableBlock) register("yellow_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.YELLOW, settings), woolSeatSettings, true);
+    public static final SittableBlock LIME_SEAT = (SittableBlock) register("lime_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.LIME, settings), woolSeatSettings, true);
+    public static final SittableBlock GREEN_SEAT = (SittableBlock) register("green_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.GREEN, settings), woolSeatSettings, true);
+    public static final SittableBlock CYAN_SEAT = (SittableBlock) register("cyan_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.CYAN, settings), woolSeatSettings, true);
+    public static final SittableBlock LIGHT_BLUE_SEAT = (SittableBlock) register("light_blue_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.LIGHT_BLUE, settings), woolSeatSettings, true);
+    public static final SittableBlock BLUE_SEAT = (SittableBlock) register("blue_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.BLUE, settings), woolSeatSettings, true);
+    public static final SittableBlock PURPLE_SEAT = (SittableBlock) register("purple_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.PURPLE, settings), woolSeatSettings, true);
+    public static final SittableBlock MAGENTA_SEAT = (SittableBlock) register("magenta_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.MAGENTA, settings), woolSeatSettings, true);
+    public static final SittableBlock PINK_SEAT = (SittableBlock) register("pink_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.PINK, settings), woolSeatSettings, true);
+    public static final SittableBlock BROWN_SEAT = (SittableBlock) register("brown_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.BROWN, settings), woolSeatSettings, true);
+    public static final SittableBlock WHITE_SEAT = (SittableBlock) register("white_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.WHITE, settings), woolSeatSettings, true);
+    public static final SittableBlock LIGHT_GRAY_SEAT = (SittableBlock) register("light_gray_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.LIGHT_GRAY, settings), woolSeatSettings, true);
+    public static final SittableBlock GRAY_SEAT = (SittableBlock) register("gray_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.GRAY, settings), woolSeatSettings, true);
+    public static final SittableBlock BLACK_SEAT = (SittableBlock) register("black_seat", (settings) -> new WoolBackedSittableBlock(DyeColor.BLACK, settings), woolSeatSettings, true);
 
-    public static final SittableBlock RED_STOOL = (SittableBlock) register("red_stool", (settings) -> new WoolStoolBlock(DyeColor.RED, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock ORANGE_STOOL = (SittableBlock) register("orange_stool", (settings) -> new WoolStoolBlock(DyeColor.ORANGE, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock YELLOW_STOOL = (SittableBlock) register("yellow_stool", (settings) -> new WoolStoolBlock(DyeColor.YELLOW, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock LIME_STOOL = (SittableBlock) register("lime_stool", (settings) -> new WoolStoolBlock(DyeColor.LIME, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock GREEN_STOOL = (SittableBlock) register("green_stool", (settings) -> new WoolStoolBlock(DyeColor.GREEN, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock CYAN_STOOL = (SittableBlock) register("cyan_stool", (settings) -> new WoolStoolBlock(DyeColor.CYAN, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock LIGHT_BLUE_STOOL = (SittableBlock) register("light_blue_stool", (settings) -> new WoolStoolBlock(DyeColor.LIGHT_BLUE, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock BLUE_STOOL = (SittableBlock) register("blue_stool", (settings) -> new WoolStoolBlock(DyeColor.BLUE, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock PURPLE_STOOL = (SittableBlock) register("purple_stool", (settings) -> new WoolStoolBlock(DyeColor.PURPLE, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock MAGENTA_STOOL = (SittableBlock) register("magenta_stool", (settings) -> new WoolStoolBlock(DyeColor.MAGENTA, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock PINK_STOOL = (SittableBlock) register("pink_stool", (settings) -> new WoolStoolBlock(DyeColor.PINK, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock BROWN_STOOL = (SittableBlock) register("brown_stool", (settings) -> new WoolStoolBlock(DyeColor.BROWN, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock WHITE_STOOL = (SittableBlock) register("white_stool", (settings) -> new WoolStoolBlock(DyeColor.WHITE, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock LIGHT_GRAY_STOOL = (SittableBlock) register("light_gray_stool", (settings) -> new WoolStoolBlock(DyeColor.LIGHT_GRAY, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock GRAY_STOOL = (SittableBlock) register("gray_stool", (settings) -> new WoolStoolBlock(DyeColor.GRAY, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
-    public static final SittableBlock BLACK_STOOL = (SittableBlock) register("black_stool", (settings) -> new WoolStoolBlock(DyeColor.BLACK, settings), AbstractBlock.Settings.create().pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock RED_STOOL = (SittableBlock) register("red_stool", (settings) -> new WoolStoolBlock(DyeColor.RED, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock ORANGE_STOOL = (SittableBlock) register("orange_stool", (settings) -> new WoolStoolBlock(DyeColor.ORANGE, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock YELLOW_STOOL = (SittableBlock) register("yellow_stool", (settings) -> new WoolStoolBlock(DyeColor.YELLOW, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock LIME_STOOL = (SittableBlock) register("lime_stool", (settings) -> new WoolStoolBlock(DyeColor.LIME, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock GREEN_STOOL = (SittableBlock) register("green_stool", (settings) -> new WoolStoolBlock(DyeColor.GREEN, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock CYAN_STOOL = (SittableBlock) register("cyan_stool", (settings) -> new WoolStoolBlock(DyeColor.CYAN, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock LIGHT_BLUE_STOOL = (SittableBlock) register("light_blue_stool", (settings) -> new WoolStoolBlock(DyeColor.LIGHT_BLUE, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock BLUE_STOOL = (SittableBlock) register("blue_stool", (settings) -> new WoolStoolBlock(DyeColor.BLUE, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock PURPLE_STOOL = (SittableBlock) register("purple_stool", (settings) -> new WoolStoolBlock(DyeColor.PURPLE, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock MAGENTA_STOOL = (SittableBlock) register("magenta_stool", (settings) -> new WoolStoolBlock(DyeColor.MAGENTA, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock PINK_STOOL = (SittableBlock) register("pink_stool", (settings) -> new WoolStoolBlock(DyeColor.PINK, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock BROWN_STOOL = (SittableBlock) register("brown_stool", (settings) -> new WoolStoolBlock(DyeColor.BROWN, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock WHITE_STOOL = (SittableBlock) register("white_stool", (settings) -> new WoolStoolBlock(DyeColor.WHITE, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock LIGHT_GRAY_STOOL = (SittableBlock) register("light_gray_stool", (settings) -> new WoolStoolBlock(DyeColor.LIGHT_GRAY, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock GRAY_STOOL = (SittableBlock) register("gray_stool", (settings) -> new WoolStoolBlock(DyeColor.GRAY, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final SittableBlock BLACK_STOOL = (SittableBlock) register("black_stool", (settings) -> new WoolStoolBlock(DyeColor.BLACK, settings), woolSeatSettings.pistonBehavior(PistonBehavior.DESTROY), true);
 
     public static final DirectionalCarpetBlock RED_DECORATIVE_CARPET = (DirectionalCarpetBlock) register("red_decorative_carpet", DirectionalCarpetBlock::new, AbstractBlock.Settings.copy(Blocks.RED_CARPET), true);
     public static final DirectionalCarpetBlock ORANGE_DECORATIVE_CARPET = (DirectionalCarpetBlock) register("orange_decorative_carpet", DirectionalCarpetBlock::new, AbstractBlock.Settings.copy(Blocks.ORANGE_CARPET), true);
@@ -316,13 +327,90 @@ public class PucksBuildingAdditionsBlocks {
     public static final LightButtonBlock SEA_LANTERN_BUTTON = (LightButtonBlock) register("sea_lantern_button", (settings) -> new LightButtonBlock( 10, 15, settings), Blocks.createButtonSettings(), true);
     public static final LightButtonBlock SHROOMLIGHT_BUTTON = (LightButtonBlock) register("shroomlight_button", (settings) -> new LightButtonBlock( 10, 15, settings), Blocks.createButtonSettings(), true);
     public static final LightButtonBlock COPPER_BUTTON = (LightButtonBlock) register("copper_button", (settings) -> new LightButtonBlock( 10, 15, settings), Blocks.createButtonSettings(), true);
-    public static final LightButtonBlock EXPOSED_COPPER_BUTTON = (LightButtonBlock) register("exposed_copper_button", (settings) -> new LightButtonBlock( 10, 15, settings), Blocks.createButtonSettings(), true);
-    public static final LightButtonBlock WEATHERED_COPPER_BUTTON = (LightButtonBlock) register("weathered_copper_button", (settings) -> new LightButtonBlock( 10, 15, settings), Blocks.createButtonSettings(), true);
-    public static final LightButtonBlock OXIDIZED_COPPER_BUTTON = (LightButtonBlock) register("oxidized_copper_button", (settings) -> new LightButtonBlock( 10, 15, settings), Blocks.createButtonSettings(), true);
+    public static final LightButtonBlock EXPOSED_COPPER_BUTTON = (LightButtonBlock) register("exposed_copper_button", (settings) -> new LightButtonBlock( 20, 12, settings), Blocks.createButtonSettings(), true);
+    public static final LightButtonBlock WEATHERED_COPPER_BUTTON = (LightButtonBlock) register("weathered_copper_button", (settings) -> new LightButtonBlock( 30, 19, settings), Blocks.createButtonSettings(), true);
+    public static final LightButtonBlock OXIDIZED_COPPER_BUTTON = (LightButtonBlock) register("oxidized_copper_button", (settings) -> new LightButtonBlock( 40, 6, settings), Blocks.createButtonSettings(), true);
     public static final LightButtonBlock OBSIDIAN_BUTTON = (LightButtonBlock) register("obsidian_button", (settings) -> new LightButtonBlock( 10, 10, settings), Blocks.createButtonSettings(), true);
+
+    public static final Block WAXED_PAPER_BLOCK = register("waxed_paper_block", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).instrument(NoteBlockInstrument.BASS).strength(1.0F, 1.0F).sounds(BlockSoundGroup.BAMBOO_WOOD), true);
+    public static final Block PAPER_BLOCK = register("paper_block", Block::new, AbstractBlock.Settings.copy(WAXED_PAPER_BLOCK).burnable(), true);
+
+    public static final PaperPaneBlock HORIZONTAL_PAPER_PANEL = (PaperPaneBlock) register("horizontal_paper_panel", (settings) -> new PaperPaneBlock(settings, false) {
+        public BlockState getPlacementState(ItemPlacementContext ctx) {
+            if (Block.isFaceFullSquare(ctx.getWorld().getBlockState(ctx.getBlockPos().down()).getSidesShape(ctx.getWorld(), ctx.getBlockPos().down()), Direction.UP)) {
+                return HORIZONTAL_PAPER_PANEL_BOTTOM.getPlacementState(ctx);
+            }
+            return super.getPlacementState(ctx);
+        }
+    }, AbstractBlock.Settings.copy(PAPER_BLOCK), true);
+    public static final PaperPaneBlock WAXED_HORIZONTAL_PAPER_PANEL = (PaperPaneBlock) register("waxed_horizontal_paper_panel", (settings) -> new PaperPaneBlock(settings, true) {
+        public BlockState getPlacementState(ItemPlacementContext ctx) {
+            if (Block.isFaceFullSquare(ctx.getWorld().getBlockState(ctx.getBlockPos().down()).getSidesShape(ctx.getWorld(), ctx.getBlockPos().down()), Direction.UP)) {
+                return WAXED_HORIZONTAL_PAPER_PANEL_BOTTOM.getPlacementState(ctx);
+            }
+            return super.getPlacementState(ctx);
+        }
+    }, AbstractBlock.Settings.copy(WAXED_PAPER_BLOCK), true);
+    public static final PaperPaneBlock HORIZONTAL_PAPER_PANEL_BOTTOM = (PaperPaneBlock) register("horizontal_paper_panel_bottom", (settings) -> new PaperPaneBlock(settings, false)  {public Item asItem() {return HORIZONTAL_PAPER_PANEL.asItem();}}, AbstractBlock.Settings.copy(PAPER_BLOCK), false);
+    public static final PaperPaneBlock WAXED_HORIZONTAL_PAPER_PANEL_BOTTOM = (PaperPaneBlock) register("waxed_horizontal_paper_panel_bottom", (settings) -> new PaperPaneBlock(settings, true) {public Item asItem() {return WAXED_HORIZONTAL_PAPER_PANEL.asItem();}}, AbstractBlock.Settings.copy(WAXED_PAPER_BLOCK), false);
+    public static final PaperPaneBlock PAPER_PANEL = (PaperPaneBlock) register("paper_panel", (settings) -> new PaperPaneBlock(settings, false) {
+        public BlockState getPlacementState(ItemPlacementContext ctx) {
+            if (!ctx.getWorld().getBlockState(ctx.getBlockPos().down()).isOf(PAPER_PANEL_BOTTOM) && !ctx.getWorld().getBlockState(ctx.getBlockPos().down()).isOf(WAXED_PAPER_PANEL_BOTTOM)) {
+                return PAPER_PANEL_BOTTOM.getPlacementState(ctx);
+            }
+            return super.getPlacementState(ctx);
+        }
+    }, AbstractBlock.Settings.copy(PAPER_BLOCK), true);
+    public static final PaperPaneBlock WAXED_PAPER_PANEL = (PaperPaneBlock) register("waxed_paper_panel", (settings) -> new PaperPaneBlock(settings, true) {
+        public BlockState getPlacementState(ItemPlacementContext ctx) {
+            if (!ctx.getWorld().getBlockState(ctx.getBlockPos().down()).isOf(PAPER_PANEL_BOTTOM) && !ctx.getWorld().getBlockState(ctx.getBlockPos().down()).isOf(WAXED_PAPER_PANEL_BOTTOM)) {
+                return PAPER_PANEL_BOTTOM.getPlacementState(ctx);
+            }
+            return super.getPlacementState(ctx);
+        }
+    }, AbstractBlock.Settings.copy(WAXED_PAPER_BLOCK), true);
+    public static final PaperPaneBlock PAPER_PANEL_BOTTOM = (PaperPaneBlock) register("paper_panel_bottom", (settings) -> new PaperPaneBlock(settings, false)  {public Item asItem() {return PAPER_PANEL.asItem();}}, AbstractBlock.Settings.copy(PAPER_BLOCK), false);
+    public static final PaperPaneBlock WAXED_PAPER_PANEL_BOTTOM = (PaperPaneBlock) register("waxed_paper_panel_bottom", (settings) -> new PaperPaneBlock(settings, true)  {public Item asItem() {return WAXED_PAPER_PANEL.asItem();}}, AbstractBlock.Settings.copy(WAXED_PAPER_BLOCK), false);
+    public static final PaneDoorBlock HORIZONTAL_PAPER_PANEL_DOOR = (PaneDoorBlock) register("horizontal_paper_panel_door", (settings) -> new PaneDoorBlock(BlockSetType.BAMBOO, settings), AbstractBlock.Settings.copy(PAPER_BLOCK), true);
+    public static final PaneDoorBlock PAPER_PANEL_DOOR = (PaneDoorBlock) register("paper_panel_door", (settings) -> new PaneDoorBlock(BlockSetType.BAMBOO, settings), AbstractBlock.Settings.copy(PAPER_BLOCK), true);
 
     public static final Map<Block, Block> CarpetsToStairs = new HashMap<>();
     private static final Object2ObjectMap<Item, BlockItem> ItemPlacements = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectMap<Block, Block> CardboardMap = new Object2ObjectOpenHashMap<>();
+
+    private static final AbstractBlock.Settings cardboardSettings = AbstractBlock.Settings.create().mapColor(MapColor.OAK_TAN).instrument(NoteBlockInstrument.BASS).strength(0.2F, 0.5F).sounds(BlockSoundGroup.BAMBOO);
+    public static final CollapsedCardboardBlock COLLAPSED_CARDBOARD = (CollapsedCardboardBlock) register("collapsed_cardboard", settings -> new CollapsedCardboardBlock(settings, true), cardboardSettings.burnable(), true);
+    public static final CollapsedCardboardBlock WET_COLLAPSED_CARDBOARD = (CollapsedCardboardBlock) register("wet_collapsed_cardboard", settings -> new CollapsedCardboardBlock(settings, false), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardPillarBlock CARDBOARD_BLOCK = (CardboardPillarBlock) register("cardboard_block", (settings -> new CardboardPillarBlock(settings, true)), cardboardSettings.burnable(), true);
+    public static final PillarBlock WAXED_CARDBOARD_BLOCK = (PillarBlock) register("waxed_cardboard_block", PillarBlock::new, cardboardSettings, true);
+    public static final CardboardPillarBlock WET_CARDBOARD_BLOCK = (CardboardPillarBlock) register("wet_cardboard_block", (settings -> new CardboardPillarBlock(settings, false)), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardBlock CARDBOARD_BOX = (CardboardBlock) register("cardboard_box", (settings -> new CardboardBlock(settings, true)), cardboardSettings.burnable(), true);
+    public static final Block WAXED_CARDBOARD_BOX = register("waxed_cardboard_box", Block::new, cardboardSettings, true);
+    public static final CardboardBlock WET_CARDBOARD_BOX = (CardboardBlock) register("wet_cardboard_box", (settings -> new CardboardBlock(settings, false)), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardDoorBlock CARDBOARD_DOOR = (CardboardDoorBlock) register("cardboard_door", settings -> new CardboardDoorBlock(settings, true), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final DoorBlock WAXED_CARDBOARD_DOOR = (DoorBlock) register("waxed_cardboard_door", settings -> new DoorBlock(BlockSetType.OAK, settings), AbstractBlock.Settings.copy(CARDBOARD_DOOR), true);
+    public static final CardboardDoorBlock WET_CARDBOARD_DOOR = (CardboardDoorBlock) register("wet_cardboard_door", settings -> new CardboardDoorBlock(settings, false), AbstractBlock.Settings.copy(CARDBOARD_DOOR), true);
+    public static final CardboardPaneBlock CARDBOARD_PANE = (CardboardPaneBlock) register("cardboard_pane", settings -> new CardboardPaneBlock(settings, true), cardboardSettings.burnable(), true);
+    public static final PaneBlock WAXED_CARDBOARD_PANE = (PaneBlock) register("waxed_cardboard_pane", PaneBlock::new, cardboardSettings, true);
+    public static final CardboardPaneBlock WET_CARDBOARD_PANE = (CardboardPaneBlock) register("wet_cardboard_pane", settings -> new CardboardPaneBlock(settings, false), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardGateBlock CARDBOARD_GATE = (CardboardGateBlock) register("cardboard_gate", settings -> new CardboardGateBlock(settings, true), cardboardSettings.burnable(), true);
+    public static final GateBlock WAXED_CARDBOARD_GATE = (GateBlock) register("waxed_cardboard_gate", GateBlock::new, cardboardSettings, true);
+    public static final CardboardGateBlock WET_CARDBOARD_GATE = (CardboardGateBlock) register("wet_cardboard_gate", settings -> new CardboardGateBlock(settings, false), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardTrapdoorBlock CARDBOARD_TRAPDOOR = (CardboardTrapdoorBlock) register("cardboard_trapdoor", settings -> new CardboardTrapdoorBlock(settings, true), cardboardSettings.burnable(), true);
+    public static final TrapdoorBlock WAXED_CARDBOARD_TRAPDOOR = (TrapdoorBlock) register("waxed_cardboard_trapdoor", settings -> new TrapdoorBlock(BlockSetType.OAK, settings), cardboardSettings, true);
+    public static final CardboardTrapdoorBlock WET_CARDBOARD_TRAPDOOR = (CardboardTrapdoorBlock) register("wet_cardboard_trapdoor", settings -> new CardboardTrapdoorBlock(settings, false), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardSlabBlock CARDBOARD_SLAB = (CardboardSlabBlock) register("cardboard_slab", (settings -> new CardboardSlabBlock(settings, true)), cardboardSettings.burnable(), true);
+    public static final SlabBlock WAXED_CARDBOARD_SLAB = (SlabBlock) register("waxed_cardboard_slab", SlabBlock::new, cardboardSettings, true);
+    public static final CardboardSlabBlock WET_CARDBOARD_SLAB = (CardboardSlabBlock) register("wet_cardboard_slab", (settings -> new CardboardSlabBlock(settings, false)), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardStairsBlock CARDBOARD_STAIRS = (CardboardStairsBlock) register("cardboard_stairs", (settings -> new CardboardStairsBlock(settings, true)), cardboardSettings.burnable(), true);
+    public static final StairsBlock WAXED_CARDBOARD_STAIRS = (StairsBlock) register("waxed_cardboard_stairs", settings -> new StairsBlock(WAXED_CARDBOARD_BOX.getDefaultState(), settings), cardboardSettings, true);
+    public static final CardboardStairsBlock WET_CARDBOARD_STAIRS = (CardboardStairsBlock) register("wet_cardboard_stairs", (settings -> new CardboardStairsBlock(settings, false)), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardSlabBlock CARDBOARD_BOX_SLAB = (CardboardSlabBlock) register("cardboard_box_slab", (settings -> new CardboardSlabBlock(settings, true)), cardboardSettings.burnable(), true);
+    public static final SlabBlock WAXED_CARDBOARD_BOX_SLAB = (SlabBlock) register("waxed_cardboard_box_slab", SlabBlock::new, cardboardSettings, true);
+    public static final CardboardSlabBlock WET_CARDBOARD_BOX_SLAB = (CardboardSlabBlock) register("wet_cardboard_box_slab", (settings -> new CardboardSlabBlock(settings, false)), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
+    public static final CardboardStairsBlock CARDBOARD_BOX_STAIRS = (CardboardStairsBlock) register("cardboard_box_stairs", (settings -> new CardboardStairsBlock(settings, true)), cardboardSettings.burnable(), true);
+    public static final StairsBlock WAXED_CARDBOARD_BOX_STAIRS = (StairsBlock) register("waxed_cardboard_box_stairs", settings -> new StairsBlock(WAXED_CARDBOARD_BOX.getDefaultState(), settings), cardboardSettings, true);
+    public static final CardboardStairsBlock WET_CARDBOARD_BOX_STAIRS = (CardboardStairsBlock) register("wet_cardboard_box_stairs", (settings -> new CardboardStairsBlock(settings, false)), cardboardSettings.pistonBehavior(PistonBehavior.DESTROY), true);
 
     private static final AbstractBlock.Settings wireSettings = AbstractBlock.Settings.create().noCollision().breakInstantly().pistonBehavior(PistonBehavior.DESTROY);
     public static final WireBlock RED_DYE_GLOWING = (WireBlock) register("glowing_red_dye_block", WireBlock::new, wireSettings, false);
@@ -358,7 +446,7 @@ public class PucksBuildingAdditionsBlocks {
     public static final DyeBlock GRAY_DYE = (DyeBlock) register("gray_dye_block", (settings) -> new DyeBlock(settings, GRAY_DYE_GLOWING), wireSettings, true);
     public static final DyeBlock BLACK_DYE = (DyeBlock) register("black_dye_block", (settings) -> new DyeBlock(settings, BLACK_DYE_GLOWING), wireSettings, true);
     public static final WireBlock SAWDUST = (WireBlock) register("sawdust", WireBlock::new, wireSettings, true);
-    public static final GlowstoneDustBlock GLOWSTONE_DUST = (GlowstoneDustBlock) register("glowstone_dust_block", GlowstoneDustBlock::new, AbstractBlock.Settings.create().noCollision().breakInstantly().pistonBehavior(PistonBehavior.DESTROY).emissiveLighting(Blocks::always).luminance((state) -> {return 3;}), true);
+    public static final GlowstoneDustBlock GLOWSTONE_DUST = (GlowstoneDustBlock) register("glowstone_dust_block", GlowstoneDustBlock::new, AbstractBlock.Settings.create().noCollision().breakInstantly().pistonBehavior(PistonBehavior.DESTROY).emissiveLighting(Blocks::always).luminance((state) -> 3), true);
     public static final BlazePowderBlock BLAZE_POWDER = (BlazePowderBlock) register("blaze_powder_block", BlazePowderBlock::new, wireSettings, true);
     public static final SugarBlock SUGAR = (SugarBlock) register("sugar_block", SugarBlock::new, wireSettings, true);
     public static final GunpowderBlock GUNPOWDER = (GunpowderBlock) register("gunpowder_block", GunpowderBlock::new, AbstractBlock.Settings.create().noCollision().breakInstantly().pistonBehavior(PistonBehavior.DESTROY).burnable(), true);
@@ -373,16 +461,38 @@ public class PucksBuildingAdditionsBlocks {
     public static final BlockEntityType<StoolBlockEntity> STOOL_BLOCK_ENTITY = registerBlockEntity("stool", FabricBlockEntityTypeBuilder.create(StoolBlockEntity::new,
             OAK_STOOL, SPRUCE_STOOL, BIRCH_STOOL, JUNGLE_STOOL, ACACIA_STOOL, DARK_OAK_STOOL, MANGROVE_STOOL, CHERRY_STOOL, PALE_OAK_STOOL, CRIMSON_STOOL, WARPED_STOOL, BAMBOO_STOOL,
             RED_STOOL, ORANGE_STOOL, YELLOW_STOOL, LIME_STOOL, GREEN_STOOL, CYAN_STOOL, LIGHT_BLUE_STOOL, BLUE_STOOL, PURPLE_STOOL, MAGENTA_STOOL, PINK_STOOL, BROWN_STOOL, WHITE_STOOL, LIGHT_GRAY_STOOL, GRAY_STOOL, BLACK_STOOL).build());
-    public static final BlockEntityType<ColoredDecoratedPotBlockEntity> COLORED_POT_BLOCK_ENTITY = registerBlockEntity("colored_decorated_pot", FabricBlockEntityTypeBuilder.create(ColoredDecoratedPotBlockEntity::new,
-            RED_DECORATED_POT, ORANGE_DECORATED_POT, YELLOW_DECORATED_POT, LIME_DECORATED_POT, GREEN_DECORATED_POT, CYAN_DECORATED_POT, LIGHT_BLUE_DECORATED_POT, BLUE_DECORATED_POT, PURPLE_DECORATED_POT, MAGENTA_DECORATED_POT, PINK_DECORATED_POT, BROWN_DECORATED_POT, WHITE_DECORATED_POT, LIGHT_GRAY_DECORATED_POT, GRAY_DECORATED_POT, BLACK_DECORATED_POT).build());
 
     public static void initialize() {
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((itemGroup) -> itemGroup.addAfter(
+                new ItemStack(PAPER_BLOCK), new ItemStack(WAXED_PAPER_BLOCK),
+                new ItemStack(PAPER_PANEL), new ItemStack(WAXED_PAPER_PANEL),
+                new ItemStack(HORIZONTAL_PAPER_PANEL), new ItemStack(WAXED_HORIZONTAL_PAPER_PANEL),
+                new ItemStack(PAPER_PANEL_DOOR), new ItemStack(HORIZONTAL_PAPER_PANEL_DOOR),
+                new ItemStack(COLLAPSED_CARDBOARD), new ItemStack(WET_COLLAPSED_CARDBOARD),
+                new ItemStack(CARDBOARD_BLOCK), new ItemStack(WAXED_CARDBOARD_BLOCK), new ItemStack(WET_CARDBOARD_BLOCK),
+                new ItemStack(CARDBOARD_STAIRS), new ItemStack(WAXED_CARDBOARD_STAIRS), new ItemStack(WET_CARDBOARD_STAIRS),
+                new ItemStack(CARDBOARD_SLAB), new ItemStack(WAXED_CARDBOARD_SLAB), new ItemStack(WET_CARDBOARD_SLAB),
+                new ItemStack(CARDBOARD_PANE), new ItemStack(WAXED_CARDBOARD_PANE), new ItemStack(WET_CARDBOARD_PANE),
+                new ItemStack(CARDBOARD_GATE), new ItemStack(WAXED_CARDBOARD_GATE), new ItemStack(WET_CARDBOARD_GATE),
+                new ItemStack(CARDBOARD_DOOR), new ItemStack(WAXED_CARDBOARD_DOOR), new ItemStack(WET_CARDBOARD_DOOR),
+                new ItemStack(CARDBOARD_TRAPDOOR), new ItemStack(WAXED_CARDBOARD_TRAPDOOR), new ItemStack(WET_CARDBOARD_TRAPDOOR),
+                new ItemStack(CARDBOARD_BOX), new ItemStack(WAXED_CARDBOARD_BOX), new ItemStack(WET_CARDBOARD_BOX),
+                new ItemStack(CARDBOARD_BOX_STAIRS), new ItemStack(WAXED_CARDBOARD_BOX_STAIRS), new ItemStack(WET_CARDBOARD_BOX_STAIRS),
+                new ItemStack(CARDBOARD_BOX_SLAB), new ItemStack(WAXED_CARDBOARD_BOX_SLAB), new ItemStack(WET_CARDBOARD_BOX_SLAB)));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register((itemGroup) -> {
             itemGroup.addAfter(Items.PINK_BED,
                 new ItemStack(WHITE_CUSHION), new ItemStack(LIGHT_GRAY_CUSHION), new ItemStack(GRAY_CUSHION), new ItemStack(BLACK_CUSHION), new ItemStack(BROWN_CUSHION), new ItemStack(RED_CUSHION), new ItemStack(ORANGE_CUSHION), new ItemStack(YELLOW_CUSHION), new ItemStack(LIME_CUSHION), new ItemStack(GREEN_CUSHION), new ItemStack(CYAN_CUSHION), new ItemStack(LIGHT_BLUE_CUSHION), new ItemStack(BLUE_CUSHION), new ItemStack(PURPLE_CUSHION), new ItemStack(MAGENTA_CUSHION), new ItemStack(PINK_CUSHION),
                 new ItemStack(WHITE_OTTOMAN), new ItemStack(LIGHT_GRAY_OTTOMAN), new ItemStack(GRAY_OTTOMAN), new ItemStack(BLACK_OTTOMAN), new ItemStack(BROWN_OTTOMAN), new ItemStack(RED_OTTOMAN), new ItemStack(ORANGE_OTTOMAN), new ItemStack(YELLOW_OTTOMAN), new ItemStack(LIME_OTTOMAN), new ItemStack(GREEN_OTTOMAN), new ItemStack(CYAN_OTTOMAN), new ItemStack(LIGHT_BLUE_OTTOMAN), new ItemStack(BLUE_OTTOMAN), new ItemStack(PURPLE_OTTOMAN), new ItemStack(MAGENTA_OTTOMAN), new ItemStack(PINK_OTTOMAN),
                 new ItemStack(WHITE_SEAT), new ItemStack(LIGHT_GRAY_SEAT), new ItemStack(GRAY_SEAT), new ItemStack(BLACK_SEAT), new ItemStack(BROWN_SEAT), new ItemStack(RED_SEAT), new ItemStack(ORANGE_SEAT), new ItemStack(YELLOW_SEAT), new ItemStack(LIME_SEAT), new ItemStack(GREEN_SEAT), new ItemStack(CYAN_SEAT), new ItemStack(LIGHT_BLUE_SEAT), new ItemStack(BLUE_SEAT), new ItemStack(PURPLE_SEAT), new ItemStack(MAGENTA_SEAT), new ItemStack(PINK_SEAT),
-                new ItemStack(WHITE_STOOL), new ItemStack(LIGHT_GRAY_STOOL), new ItemStack(GRAY_STOOL), new ItemStack(BLACK_STOOL), new ItemStack(BROWN_STOOL), new ItemStack(RED_STOOL), new ItemStack(ORANGE_STOOL), new ItemStack(YELLOW_STOOL), new ItemStack(LIME_STOOL), new ItemStack(GREEN_STOOL), new ItemStack(CYAN_STOOL), new ItemStack(LIGHT_BLUE_STOOL), new ItemStack(BLUE_STOOL), new ItemStack(PURPLE_STOOL), new ItemStack(MAGENTA_STOOL), new ItemStack(PINK_STOOL));
+                new ItemStack(WHITE_STOOL), new ItemStack(LIGHT_GRAY_STOOL), new ItemStack(GRAY_STOOL), new ItemStack(BLACK_STOOL), new ItemStack(BROWN_STOOL), new ItemStack(RED_STOOL), new ItemStack(ORANGE_STOOL), new ItemStack(YELLOW_STOOL), new ItemStack(LIME_STOOL), new ItemStack(GREEN_STOOL), new ItemStack(CYAN_STOOL), new ItemStack(LIGHT_BLUE_STOOL), new ItemStack(BLUE_STOOL), new ItemStack(PURPLE_STOOL), new ItemStack(MAGENTA_STOOL), new ItemStack(PINK_STOOL),
+                new ItemStack(Items.FLOWER_POT), new ItemStack(WHITE_FLOWER_POTS[0]), new ItemStack(LIGHT_GRAY_FLOWER_POTS[0]), new ItemStack(GRAY_FLOWER_POTS[0]), new ItemStack(BLACK_FLOWER_POTS[0]), new ItemStack(BROWN_FLOWER_POTS[0]), new ItemStack(RED_FLOWER_POTS[0]), new ItemStack(ORANGE_FLOWER_POTS[0]), new ItemStack(YELLOW_FLOWER_POTS[0]), new ItemStack(LIME_FLOWER_POTS[0]), new ItemStack(GREEN_FLOWER_POTS[0]), new ItemStack(CYAN_FLOWER_POTS[0]), new ItemStack(LIGHT_BLUE_FLOWER_POTS[0]), new ItemStack(BLUE_FLOWER_POTS[0]), new ItemStack(PURPLE_FLOWER_POTS[0]), new ItemStack(MAGENTA_FLOWER_POTS[0]), new ItemStack(PINK_FLOWER_POTS[0]),
+                new ItemStack(LARGE_FLOWER_POTS[0]), new ItemStack(WHITE_LARGE_FLOWER_POTS[0]), new ItemStack(LIGHT_GRAY_LARGE_FLOWER_POTS[0]), new ItemStack(GRAY_LARGE_FLOWER_POTS[0]), new ItemStack(BLACK_LARGE_FLOWER_POTS[0]), new ItemStack(BROWN_LARGE_FLOWER_POTS[0]), new ItemStack(RED_LARGE_FLOWER_POTS[0]), new ItemStack(ORANGE_FLOWER_POTS[0]), new ItemStack(YELLOW_LARGE_FLOWER_POTS[0]), new ItemStack(LIME_LARGE_FLOWER_POTS[0]), new ItemStack(GREEN_LARGE_FLOWER_POTS[0]), new ItemStack(CYAN_LARGE_FLOWER_POTS[0]), new ItemStack(LIGHT_BLUE_LARGE_FLOWER_POTS[0]), new ItemStack(BLUE_LARGE_FLOWER_POTS[0]), new ItemStack(PURPLE_LARGE_FLOWER_POTS[0]), new ItemStack(MAGENTA_LARGE_FLOWER_POTS[0]), new ItemStack(PINK_LARGE_FLOWER_POTS[0]),
+                new ItemStack(HANGING_FLOWER_POTS[0]), new ItemStack(WHITE_HANGING_FLOWER_POTS[0]), new ItemStack(LIGHT_GRAY_HANGING_FLOWER_POTS[0]), new ItemStack(GRAY_HANGING_FLOWER_POTS[0]), new ItemStack(BLACK_HANGING_FLOWER_POTS[0]), new ItemStack(BROWN_HANGING_FLOWER_POTS[0]), new ItemStack(RED_HANGING_FLOWER_POTS[0]), new ItemStack(ORANGE_HANGING_FLOWER_POTS[0]), new ItemStack(YELLOW_HANGING_FLOWER_POTS[0]), new ItemStack(LIME_HANGING_FLOWER_POTS[0]), new ItemStack(GREEN_HANGING_FLOWER_POTS[0]), new ItemStack(CYAN_HANGING_FLOWER_POTS[0]), new ItemStack(LIGHT_BLUE_HANGING_FLOWER_POTS[0]), new ItemStack(BLUE_HANGING_FLOWER_POTS[0]), new ItemStack(PURPLE_HANGING_FLOWER_POTS[0]), new ItemStack(MAGENTA_HANGING_FLOWER_POTS[0]), new ItemStack(PINK_HANGING_FLOWER_POTS[0]),
+                new ItemStack(Items.DECORATED_POT), new ItemStack(WHITE_DECORATED_POT), new ItemStack(LIGHT_GRAY_DECORATED_POT), new ItemStack(GRAY_DECORATED_POT), new ItemStack(BLACK_DECORATED_POT), new ItemStack(BROWN_FLOWER_POTS[0]), new ItemStack(RED_DECORATED_POT), new ItemStack(ORANGE_DECORATED_POT), new ItemStack(YELLOW_DECORATED_POT), new ItemStack(LIME_DECORATED_POT), new ItemStack(GREEN_DECORATED_POT), new ItemStack(CYAN_DECORATED_POT), new ItemStack(LIGHT_BLUE_DECORATED_POT), new ItemStack(BLUE_DECORATED_POT), new ItemStack(PURPLE_DECORATED_POT), new ItemStack(MAGENTA_DECORATED_POT), new ItemStack(PINK_DECORATED_POT)
+            );
+
+            itemGroup.addAfter(Items.PINK_CARPET,
+                    new ItemStack(WHITE_DECORATIVE_CARPET), new ItemStack(LIGHT_GRAY_DECORATIVE_CARPET), new ItemStack(GRAY_DECORATIVE_CARPET), new ItemStack(BLACK_DECORATIVE_CARPET), new ItemStack(BROWN_DECORATIVE_CARPET), new ItemStack(RED_DECORATIVE_CARPET), new ItemStack(ORANGE_DECORATIVE_CARPET), new ItemStack(YELLOW_DECORATIVE_CARPET), new ItemStack(LIME_DECORATIVE_CARPET), new ItemStack(GREEN_DECORATIVE_CARPET), new ItemStack(CYAN_DECORATIVE_CARPET), new ItemStack(LIGHT_BLUE_DECORATIVE_CARPET), new ItemStack(BLUE_DECORATIVE_CARPET), new ItemStack(PURPLE_DECORATIVE_CARPET), new ItemStack(MAGENTA_DECORATIVE_CARPET), new ItemStack(PINK_DECORATIVE_CARPET));
         });
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register((itemGroup) -> {
             itemGroup.addAfter(Items.MAGMA_BLOCK, new ItemStack(GLOWSTONE_BUTTON), new ItemStack(PEARLESCENT_FROGLIGHT_BUTTON), new ItemStack(VERDANT_FROGLIGHT_BUTTON), new ItemStack(OCHRE_FROGLIGHT_BUTTON), new ItemStack(REDSTONE_LAMP_BUTTON), new ItemStack(SEA_LANTERN_BUTTON), new ItemStack(SHROOMLIGHT_BUTTON), new ItemStack(COPPER_BUTTON), new ItemStack(WEATHERED_COPPER_BUTTON), new ItemStack(EXPOSED_COPPER_BUTTON), new ItemStack(OXIDIZED_COPPER_BUTTON), new ItemStack(OBSIDIAN_BUTTON));
@@ -395,10 +505,13 @@ public class PucksBuildingAdditionsBlocks {
                 new ItemStack(OAK_BENCH), new ItemStack(SPRUCE_BENCH), new ItemStack(BIRCH_BENCH), new ItemStack(JUNGLE_BENCH), new ItemStack(ACACIA_BENCH), new ItemStack(DARK_OAK_BENCH), new ItemStack(MANGROVE_BENCH), new ItemStack(CHERRY_BENCH), new ItemStack(PALE_OAK_BENCH), new ItemStack(BAMBOO_BENCH), new ItemStack(CRIMSON_BENCH), new ItemStack(WARPED_BENCH),
                     new ItemStack(OAK_SEAT), new ItemStack(SPRUCE_SEAT), new ItemStack(BIRCH_SEAT), new ItemStack(JUNGLE_SEAT), new ItemStack(ACACIA_SEAT), new ItemStack(DARK_OAK_SEAT), new ItemStack(MANGROVE_SEAT), new ItemStack(CHERRY_SEAT), new ItemStack(PALE_OAK_SEAT), new ItemStack(BAMBOO_SEAT), new ItemStack(CRIMSON_SEAT), new ItemStack(WARPED_SEAT),
                     new ItemStack(OAK_STOOL), new ItemStack(SPRUCE_STOOL), new ItemStack(BIRCH_STOOL), new ItemStack(JUNGLE_STOOL), new ItemStack(ACACIA_STOOL), new ItemStack(DARK_OAK_STOOL), new ItemStack(MANGROVE_STOOL), new ItemStack(CHERRY_STOOL), new ItemStack(PALE_OAK_STOOL), new ItemStack(BAMBOO_STOOL), new ItemStack(CRIMSON_STOOL), new ItemStack(WARPED_STOOL));
+            itemGroup.addAfter(Items.FLOWER_POT, new ItemStack(WHITE_FLOWER_POTS[0]), new ItemStack(LIGHT_GRAY_FLOWER_POTS[0]), new ItemStack(GRAY_FLOWER_POTS[0]), new ItemStack(BLACK_FLOWER_POTS[0]), new ItemStack(BROWN_FLOWER_POTS[0]), new ItemStack(RED_FLOWER_POTS[0]), new ItemStack(ORANGE_FLOWER_POTS[0]), new ItemStack(YELLOW_FLOWER_POTS[0]), new ItemStack(LIME_FLOWER_POTS[0]), new ItemStack(GREEN_FLOWER_POTS[0]), new ItemStack(CYAN_FLOWER_POTS[0]), new ItemStack(LIGHT_BLUE_FLOWER_POTS[0]), new ItemStack(BLUE_FLOWER_POTS[0]), new ItemStack(PURPLE_FLOWER_POTS[0]), new ItemStack(MAGENTA_FLOWER_POTS[0]), new ItemStack(PINK_FLOWER_POTS[0]),
+                    new ItemStack(WHITE_LARGE_FLOWER_POTS[0]), new ItemStack(LIGHT_GRAY_LARGE_FLOWER_POTS[0]), new ItemStack(GRAY_LARGE_FLOWER_POTS[0]), new ItemStack(BLACK_LARGE_FLOWER_POTS[0]), new ItemStack(BROWN_LARGE_FLOWER_POTS[0]), new ItemStack(RED_LARGE_FLOWER_POTS[0]), new ItemStack(ORANGE_FLOWER_POTS[0]), new ItemStack(YELLOW_LARGE_FLOWER_POTS[0]), new ItemStack(LIME_LARGE_FLOWER_POTS[0]), new ItemStack(GREEN_LARGE_FLOWER_POTS[0]), new ItemStack(CYAN_LARGE_FLOWER_POTS[0]), new ItemStack(LIGHT_BLUE_LARGE_FLOWER_POTS[0]), new ItemStack(BLUE_LARGE_FLOWER_POTS[0]), new ItemStack(PURPLE_LARGE_FLOWER_POTS[0]), new ItemStack(MAGENTA_LARGE_FLOWER_POTS[0]), new ItemStack(PINK_LARGE_FLOWER_POTS[0]),
+                    new ItemStack(HANGING_FLOWER_POTS[0]), new ItemStack(WHITE_HANGING_FLOWER_POTS[0]), new ItemStack(LIGHT_GRAY_HANGING_FLOWER_POTS[0]), new ItemStack(GRAY_HANGING_FLOWER_POTS[0]), new ItemStack(BLACK_HANGING_FLOWER_POTS[0]), new ItemStack(BROWN_HANGING_FLOWER_POTS[0]), new ItemStack(RED_HANGING_FLOWER_POTS[0]), new ItemStack(ORANGE_HANGING_FLOWER_POTS[0]), new ItemStack(YELLOW_HANGING_FLOWER_POTS[0]), new ItemStack(LIME_HANGING_FLOWER_POTS[0]), new ItemStack(GREEN_HANGING_FLOWER_POTS[0]), new ItemStack(CYAN_HANGING_FLOWER_POTS[0]), new ItemStack(LIGHT_BLUE_HANGING_FLOWER_POTS[0]), new ItemStack(BLUE_HANGING_FLOWER_POTS[0]), new ItemStack(PURPLE_HANGING_FLOWER_POTS[0]), new ItemStack(MAGENTA_HANGING_FLOWER_POTS[0]), new ItemStack(PINK_HANGING_FLOWER_POTS[0]));
+            itemGroup.addAfter(Items.DECORATED_POT, new ItemStack(WHITE_DECORATED_POT), new ItemStack(LIGHT_GRAY_DECORATED_POT), new ItemStack(GRAY_DECORATED_POT), new ItemStack(BLACK_DECORATED_POT), new ItemStack(BROWN_FLOWER_POTS[0]), new ItemStack(RED_DECORATED_POT), new ItemStack(ORANGE_DECORATED_POT), new ItemStack(YELLOW_DECORATED_POT), new ItemStack(LIME_DECORATED_POT), new ItemStack(GREEN_DECORATED_POT), new ItemStack(CYAN_DECORATED_POT), new ItemStack(LIGHT_BLUE_DECORATED_POT), new ItemStack(BLUE_DECORATED_POT), new ItemStack(PURPLE_DECORATED_POT), new ItemStack(MAGENTA_DECORATED_POT), new ItemStack(PINK_DECORATED_POT));
         });
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register((itemGroup) -> {
-            itemGroup.addAfter(Items.STONE_BUTTON, new ItemStack(SEA_LANTERN_BUTTON));
-        });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register((itemGroup) -> itemGroup.addAfter(Items.STONE_BUTTON, new ItemStack(SEA_LANTERN_BUTTON)));
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> itemGroup.addAfter(Items.GUNPOWDER, new ItemStack(SAWDUST)));
 
         FireBlock fireBlock = (FireBlock) Blocks.FIRE;
         fireBlock.registerFlammableBlock(GUNPOWDER, 100, 0);
@@ -425,7 +538,38 @@ public class PucksBuildingAdditionsBlocks {
         registerItemPlacement(Items.SUGAR, (BlockItem) SUGAR.asItem());
         registerItemPlacement(Items.GUNPOWDER, (BlockItem) GUNPOWDER.asItem());
 
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_BLOCK, WAXED_CARDBOARD_BLOCK);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_SLAB, WAXED_CARDBOARD_SLAB);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_STAIRS, WAXED_CARDBOARD_STAIRS);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_DOOR, WAXED_CARDBOARD_DOOR);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_PANE, WAXED_CARDBOARD_PANE);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_GATE, WAXED_CARDBOARD_GATE);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_BOX, WAXED_CARDBOARD_BOX);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_BOX_SLAB, WAXED_CARDBOARD_BOX_SLAB);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_BOX_STAIRS, WAXED_CARDBOARD_BOX_STAIRS);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(CARDBOARD_TRAPDOOR, WAXED_CARDBOARD_TRAPDOOR);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(HORIZONTAL_PAPER_PANEL, WAXED_HORIZONTAL_PAPER_PANEL);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(HORIZONTAL_PAPER_PANEL_BOTTOM, WAXED_HORIZONTAL_PAPER_PANEL_BOTTOM);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(PAPER_PANEL, WAXED_PAPER_PANEL);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(PAPER_PANEL_BOTTOM, WAXED_PAPER_PANEL_BOTTOM);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(PAPER_BLOCK, WAXED_PAPER_BLOCK);
 
+        BlockEntityType.DECORATED_POT.addSupportedBlock(WHITE_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(LIGHT_GRAY_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(GRAY_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(BLACK_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(RED_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(ORANGE_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(YELLOW_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(LIME_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(GREEN_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(CYAN_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(LIGHT_BLUE_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(BLUE_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(PURPLE_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(MAGENTA_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(PINK_DECORATED_POT);
+        BlockEntityType.DECORATED_POT.addSupportedBlock(BROWN_DECORATED_POT);
     }
 
     public static void registerItemPlacement(Item item, BlockItem blockItem) {
@@ -468,5 +612,26 @@ public class PucksBuildingAdditionsBlocks {
         CarpetsToStairs.put(LIGHT_GRAY_DECORATIVE_CARPET, register("light_gray_decorative_stair_carpet", StairCarpetBlock::new, AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_CARPET), false));
         CarpetsToStairs.put(GRAY_DECORATIVE_CARPET, register("gray_decorative_stair_carpet", StairCarpetBlock::new, AbstractBlock.Settings.copy(Blocks.GRAY_CARPET), false));
         CarpetsToStairs.put(BLACK_DECORATIVE_CARPET, register("black_decorative_stair_carpet", StairCarpetBlock::new, AbstractBlock.Settings.copy(Blocks.BLACK_CARPET), false));
+
+        CardboardMap.put(COLLAPSED_CARDBOARD, WET_COLLAPSED_CARDBOARD);
+        CardboardMap.put(WET_COLLAPSED_CARDBOARD, COLLAPSED_CARDBOARD);
+        CardboardMap.put(CARDBOARD_BOX, WET_CARDBOARD_BOX);
+        CardboardMap.put(WET_CARDBOARD_BOX, CARDBOARD_BOX);
+        CardboardMap.put(CARDBOARD_BOX_STAIRS, WET_CARDBOARD_BOX_STAIRS);
+        CardboardMap.put(WET_CARDBOARD_BOX_STAIRS, CARDBOARD_BOX_STAIRS);
+        CardboardMap.put(CARDBOARD_DOOR, WET_CARDBOARD_DOOR);
+        CardboardMap.put(WET_CARDBOARD_DOOR, CARDBOARD_DOOR);
+        CardboardMap.put(CARDBOARD_PANE, WET_CARDBOARD_PANE);
+        CardboardMap.put(WET_CARDBOARD_PANE, CARDBOARD_PANE);
+        CardboardMap.put(CARDBOARD_SLAB, WET_CARDBOARD_SLAB);
+        CardboardMap.put(WET_CARDBOARD_SLAB, CARDBOARD_SLAB);
+        CardboardMap.put(CARDBOARD_BLOCK, WET_CARDBOARD_BLOCK);
+        CardboardMap.put(WET_CARDBOARD_BLOCK, CARDBOARD_BLOCK);
+        CardboardMap.put(CARDBOARD_STAIRS, WET_CARDBOARD_STAIRS);
+        CardboardMap.put(WET_CARDBOARD_STAIRS, CARDBOARD_STAIRS);
+        CardboardMap.put(CARDBOARD_TRAPDOOR, WET_CARDBOARD_TRAPDOOR);
+        CardboardMap.put(WET_CARDBOARD_TRAPDOOR, CARDBOARD_TRAPDOOR);
+        CardboardMap.put(CARDBOARD_GATE, WET_CARDBOARD_GATE);
+        CardboardMap.put(WET_CARDBOARD_GATE, CARDBOARD_GATE);
     }
 }

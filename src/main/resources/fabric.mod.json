@@ -3,13 +3,13 @@
 	"id": "pucks_building_additions",
 	"version": "${version}",
 	"name": "Puck's Building Additions",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A building mod aiming to add furniture that fits in with vanilla!",
 	"authors": [
-		"Me!"
+		"sirstotes"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/project/pucks-building-additions",
+		"sources": "https://github.com/sirstotes/Pucks-Building-Additions"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/pucks_building_additions/icon.png",
@@ -37,8 +37,5 @@
 		"minecraft": "~1.21.4",
 		"java": ">=21",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }

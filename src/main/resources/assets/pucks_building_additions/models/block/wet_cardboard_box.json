@@ -1,0 +1,10 @@
+{
+  "parent": "pucks_building_additions:block/cardboard_box_base",
+  "textures": {
+    "particle": "pucks_building_additions:block/wet_cardboard_box_bottom",
+    "top": "pucks_building_additions:block/wet_cardboard_box_top",
+    "bottom": "pucks_building_additions:block/wet_cardboard_box_bottom",
+    "front": "pucks_building_additions:block/wet_cardboard_box_front",
+    "side": "pucks_building_additions:block/wet_cardboard_box_side"
+  }
+}

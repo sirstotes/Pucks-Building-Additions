@@ -1,0 +1,9 @@
+{
+	"format_version": "1.9.0",
+	"parent": "pucks_building_additions:block/cardboard_gate_open",
+	"textures": {
+		"texture": "pucks_building_additions:block/wet_cardboard_gate",
+		"edge": "pucks_building_additions:block/wet_cardboard_pane_edge",
+		"particle": "pucks_building_additions:block/wet_cardboard_gate"
+	}
+}

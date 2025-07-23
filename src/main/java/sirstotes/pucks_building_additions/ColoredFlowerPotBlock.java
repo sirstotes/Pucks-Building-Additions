@@ -55,10 +55,10 @@ public class ColoredFlowerPotBlock extends Block {
     protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
-    private final Block content;
+    private Block content = null;
 
-    private boolean isEmpty() {
-        return this.content == Blocks.AIR;
+    public boolean isEmpty() {
+        return this.content == null || this.content == Blocks.AIR;
     }
 
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {

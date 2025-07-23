@@ -1,0 +1,9 @@
+{
+	"format_version": "1.9.0",
+	"parent": "pucks_building_additions:block/cardboard_slab_top",
+	"textures": {
+		"side": "pucks_building_additions:block/wet_cardboard_block",
+		"top": "pucks_building_additions:block/wet_cardboard_block_top",
+		"particle": "pucks_building_additions:block/wet_cardboard_block"
+	}
+}

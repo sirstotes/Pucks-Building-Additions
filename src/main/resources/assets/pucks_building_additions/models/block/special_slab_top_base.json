@@ -1,0 +1,25 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"particle": "pucks_building_additions:block/cardboard_box_bottom",
+		"top": "pucks_building_additions:block/cardboard_box_top",
+		"bottom": "pucks_building_additions:block/cardboard_box_bottom",
+		"front": "pucks_building_additions:block/cardboard_slab_side",
+		"side": "pucks_building_additions:block/cardboard_slab_side2"
+	},
+	"elements": [
+		{
+			"from": [0, 8, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 8, 16, 16], "texture": "#front"},
+				"east": {"uv": [0, 8, 16, 16], "texture": "#side"},
+				"south": {"uv": [0, 8, 16, 16], "texture": "#front"},
+				"west": {"uv": [0, 8, 16, 16], "texture": "#side"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#top"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#bottom"}
+			}
+		}
+	]
+}
