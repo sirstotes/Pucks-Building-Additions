@@ -15,6 +15,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationPropertyHelper;
@@ -38,14 +39,19 @@ public class StoolBlock extends SittableBlock {
     }
 
     @Override
+
+    /*? if >1.20.1 {*/
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+     /*?} else {*/
+    /*public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    *//*?}*/
         if (world.isClient) {
-            return ActionResult.SUCCESS_SERVER;
+            return /*? if <1.21.2 {*//*ActionResult.SUCCESS*//*?} else {*/ActionResult.SUCCESS_SERVER/*?}*/;
         } else {
             if(world.getBlockEntity(pos) instanceof StoolBlockEntity) {
                 if (state.get(OCCUPIED)) {
                     //remove villagers if sitting
-                    return ActionResult.SUCCESS_SERVER;
+                    return /*? if <1.21.2 {*//*ActionResult.SUCCESS*//*?} else {*/ActionResult.SUCCESS_SERVER/*?}*/;
                 } else {
                     Entity s = ((StoolBlockEntity) Objects.requireNonNull(world.getBlockEntity(pos))).getSittableEntity();
                     if (player.shouldCancelInteraction()) {
@@ -63,18 +69,18 @@ public class StoolBlock extends SittableBlock {
         return getDefaultState().with(ROTATION, RotationPropertyHelper.fromYaw(ctx.getPlayerYaw()));
     }
 
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
     protected VoxelShape getCullingShape(BlockState state) {
         return VoxelShapes.empty();
     }
 
-    protected BlockState rotate(BlockState state, BlockRotation rotation) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(ROTATION, rotation.rotate(state.get(ROTATION), MAX_ROTATIONS));
     }
 
-    protected BlockState mirror(BlockState state, BlockMirror mirror) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.with(ROTATION, mirror.mirror(state.get(ROTATION), MAX_ROTATIONS));
     }
 
@@ -87,7 +93,7 @@ public class StoolBlock extends SittableBlock {
     }
 
     @Override
-    protected BlockRenderType getRenderType(BlockState state) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 

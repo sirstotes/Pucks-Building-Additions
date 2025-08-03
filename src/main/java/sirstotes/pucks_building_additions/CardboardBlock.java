@@ -7,6 +7,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+//? if >1.20.1
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,13 +41,20 @@ public class CardboardBlock extends Block implements Cardboard {
             c.dehydrate(world, pos.down());
         }
     }
-    protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         this.update(world, pos);
     }
+    /*? if >1.20.1 {*/
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         this.update(world, pos);
         super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
     }
+    /*?} else {*/
+    /*public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        this.update(world, pos);
+        super.neighborUpdate(state, world, pos, sourceBlock, sourcePos, notify);
+    }
+    *//*?}*/
     protected void update(World world, BlockPos pos) {
         if (!(world.getFluidState(pos.up()).isEmpty() && world.getFluidState(pos.down()).isEmpty() && world.getFluidState(pos.north()).isEmpty() && world.getFluidState(pos.east()).isEmpty() && world.getFluidState(pos.south()).isEmpty() && world.getFluidState(pos.west()).isEmpty())) {
             hydrate(world, pos);

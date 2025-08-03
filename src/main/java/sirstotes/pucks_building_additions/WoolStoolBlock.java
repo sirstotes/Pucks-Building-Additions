@@ -13,12 +13,12 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class WoolStoolBlock extends StoolBlock {
-    public static final MapCodec<BedBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-        return instance.group(DyeColor.CODEC.fieldOf("color").forGetter(BedBlock::getColor), createSettingsCodec()).apply(instance, BedBlock::new);
-    });
+    //? if >1.20.1 {
+    public static final MapCodec<BedBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color").forGetter(BedBlock::getColor), createSettingsCodec()).apply(instance, BedBlock::new));
     public MapCodec<BedBlock> getCodec() {
         return CODEC;
     }
+    //?}
     private final DyeColor color;
     public WoolStoolBlock(DyeColor color, Settings settings) {
         super(settings);

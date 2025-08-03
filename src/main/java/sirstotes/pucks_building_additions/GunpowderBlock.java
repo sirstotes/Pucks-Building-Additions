@@ -23,22 +23,25 @@ public class GunpowderBlock extends WireBlock {
         return state.getBlock() instanceof GunpowderBlock;
     }
 
+    /*? if >1.20.1 {*/
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (stack.isOf(Items.FLINT_AND_STEEL) || stack.isOf(Items.FIRE_CHARGE)) {
-            if (!world.isClient) light((ServerWorld) world, pos);
+            if (!world.isClient) light(world, pos);
             return ActionResult.SUCCESS;
         }
         return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
     }
-
-//    @Override
-//    protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
-//        if (neighborState.getBlock() instanceof FireBlock) {
-//            return FireBlock.getState(world, pos);
-//        }
-//        return super.getStateForNeighborUpdate(state, world, tickView, pos, direction, neighborPos, neighborState, random);
-//    }
-    protected void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    /*?} else {*/
+    /*protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        ItemStack stack = player.getStackInHand(player.preferredHand);
+        if (stack.isOf(Items.FLINT_AND_STEEL) || stack.isOf(Items.FIRE_CHARGE)) {
+            if (!world.isClient) light(world, pos);
+            return ActionResult.SUCCESS;
+        }
+        return super.onUse(state, world, pos, player, hit);
+    }
+    *//*?}*/
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         light(world, pos);
     }
 

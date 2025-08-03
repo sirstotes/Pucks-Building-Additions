@@ -36,23 +36,8 @@ public class StoolBlockEntityRenderer implements BlockEntityRenderer<StoolBlockE
 
         BakedModel bakedmodel = MinecraftClient.getInstance().getBakedModelManager().getBlockModels().getModel(blockState);
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getSolid());
-        //MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(matrices.peek(), vertexConsumer, blockState, bakedmodel, 1f, 1f, 1f, light, overlay);
         MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(entity.getWorld(), bakedmodel, blockState, entity.getPos(), matrices, vertexConsumer, false, entity.getWorld().getRandom(), blockState.getRenderingSeed(entity.getPos()), overlay);
 
         matrices.pop();
-
-//        if (direction == null) {
-//            matrices.translate(0.5F, 0.0F, 0.5F);
-//        } else {
-//            float f = 0.25F;
-//            matrices.translate(0.5F - (float)direction.getOffsetX() * 0.25F, 0.0F, 0.5F - (float)direction.getOffsetZ() * 0.25F);
-//        }
-//        matrices.scale(-1.0F, -1.0F, 1.0F);
-//
-//        MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(blockState, matrices, vertexConsumers, light, overlay);
-//        rotate model
-//        render model
-//        model.setStoolRotation(yaw, 0.0F);
-//        model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
     }
 }

@@ -4,15 +4,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.impl.client.rendering.SpecialBlockRendererRegistryImpl;
-import net.fabricmc.fabric.mixin.client.rendering.BlockColorsMixin;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.render.block.entity.DecoratedPotBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.item.model.special.SpecialModelTypes;
 import net.minecraft.util.Identifier;
+/*? if >1.20.1 {*/
+import net.minecraft.client.render.item.model.special.SpecialModelTypes;
+ /*?}*/
 
 public class PucksBuildingAdditionsClient implements ClientModInitializer {
 	public static final EntityModelLayer SITTABLE_LAYER = new EntityModelLayer(Identifier.of(PucksBuildingAdditions.MOD_ID, "sittable"), "main");
@@ -27,15 +25,17 @@ public class PucksBuildingAdditionsClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(PucksBuildingAdditionsBlocks.STOOL_BLOCK_ENTITY, StoolBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(PucksBuildingAdditionsBlocks.WOOL_SITTABLE_BLOCK_ENTITY, WoolSittableBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(PucksBuildingAdditionsBlocks.CUSHION_BLOCK_ENTITY, WoolSittableBlockEntityRenderer::new);
-		//BlockEntityRendererFactories.register(PucksBuildingAdditionsBlocks.COLORED_POT_BLOCK_ENTITY, ColoredDecoratedPotBlockEntityRenderer::new);
+		//? if >1.20.1
 		SpecialModelTypes.ID_MAPPER.put(Identifier.of(PucksBuildingAdditions.MOD_ID, "colored_decorated_pot"), ColoredDecoratedPotModelRenderer.Unbaked.CODEC);
+
 
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), PucksBuildingAdditionsBlocks.RED_DYE_GLOWING, PucksBuildingAdditionsBlocks.ORANGE_DYE_GLOWING, PucksBuildingAdditionsBlocks.YELLOW_DYE_GLOWING, PucksBuildingAdditionsBlocks.LIME_DYE_GLOWING, PucksBuildingAdditionsBlocks.GREEN_DYE_GLOWING, PucksBuildingAdditionsBlocks.CYAN_DYE_GLOWING, PucksBuildingAdditionsBlocks.LIGHT_BLUE_DYE_GLOWING, PucksBuildingAdditionsBlocks.BLUE_DYE_GLOWING, PucksBuildingAdditionsBlocks.PURPLE_DYE_GLOWING, PucksBuildingAdditionsBlocks.MAGENTA_DYE_GLOWING, PucksBuildingAdditionsBlocks.PINK_DYE_GLOWING, PucksBuildingAdditionsBlocks.BROWN_DYE_GLOWING, PucksBuildingAdditionsBlocks.WHITE_DYE_GLOWING, PucksBuildingAdditionsBlocks.LIGHT_GRAY_DYE_GLOWING, PucksBuildingAdditionsBlocks.GRAY_DYE_GLOWING, PucksBuildingAdditionsBlocks.BLACK_DYE_GLOWING,
 				PucksBuildingAdditionsBlocks.RED_DYE, PucksBuildingAdditionsBlocks.ORANGE_DYE, PucksBuildingAdditionsBlocks.YELLOW_DYE, PucksBuildingAdditionsBlocks.LIME_DYE, PucksBuildingAdditionsBlocks.GREEN_DYE, PucksBuildingAdditionsBlocks.CYAN_DYE, PucksBuildingAdditionsBlocks.LIGHT_BLUE_DYE, PucksBuildingAdditionsBlocks.BLUE_DYE, PucksBuildingAdditionsBlocks.PURPLE_DYE, PucksBuildingAdditionsBlocks.MAGENTA_DYE, PucksBuildingAdditionsBlocks.PINK_DYE, PucksBuildingAdditionsBlocks.BROWN_DYE, PucksBuildingAdditionsBlocks.WHITE_DYE, PucksBuildingAdditionsBlocks.LIGHT_GRAY_DYE, PucksBuildingAdditionsBlocks.GRAY_DYE, PucksBuildingAdditionsBlocks.BLACK_DYE,
 				PucksBuildingAdditionsBlocks.GLOWSTONE_DUST,
 				PucksBuildingAdditionsBlocks.BLAZE_POWDER,
 				PucksBuildingAdditionsBlocks.SUGAR,
-				PucksBuildingAdditionsBlocks.GUNPOWDER);
+				PucksBuildingAdditionsBlocks.GUNPOWDER,
+				PucksBuildingAdditionsBlocks.SAWDUST);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), PucksBuildingAdditionsBlocks.CARDBOARD_DOOR,
 				PucksBuildingAdditionsBlocks.WAXED_CARDBOARD_DOOR,
 				PucksBuildingAdditionsBlocks.WET_CARDBOARD_DOOR,
@@ -95,23 +95,5 @@ public class PucksBuildingAdditionsClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), PucksBuildingAdditionsBlocks.LIGHT_GRAY_HANGING_FLOWER_POTS);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), PucksBuildingAdditionsBlocks.GRAY_HANGING_FLOWER_POTS);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), PucksBuildingAdditionsBlocks.BLACK_HANGING_FLOWER_POTS);
-
-//		BlockRenderLayerMap.INSTANCE.putBlocks(TexturedRenderLayers.getBeds(),
-//				PucksBuildingAdditionsBlocks.RED_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.ORANGE_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.YELLOW_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.LIME_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.GREEN_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.CYAN_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.LIGHT_BLUE_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.BLUE_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.PURPLE_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.MAGENTA_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.PINK_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.BROWN_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.WHITE_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.LIGHT_GRAY_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.GRAY_OTTOMAN,
-//				PucksBuildingAdditionsBlocks.BLACK_OTTOMAN);
 	}
 }

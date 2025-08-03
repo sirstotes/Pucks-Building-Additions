@@ -27,7 +27,7 @@ public class WallStoolBlock extends StoolBlock {
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return FACING_TO_SHAPE.get(state.get(FACING));
     }
 
@@ -53,11 +53,11 @@ public class WallStoolBlock extends StoolBlock {
         return null;
     }
 
-    protected BlockState rotate(BlockState state, BlockRotation rotation) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
-    protected BlockState mirror(BlockState state, BlockMirror mirror) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.rotate(mirror.getRotation(state.get(FACING)));
     }
 

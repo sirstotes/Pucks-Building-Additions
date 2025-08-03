@@ -12,7 +12,7 @@ import sirstotes.pucks_building_additions.GunpowderBlock;
 
 @Mixin(FireBlock.class)
 public class FireBlockMixin {
-    @Inject(method = "Lnet/minecraft/block/FireBlock;trySpreadingFire(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/util/math/random/Random;I)V",
+    @Inject(method = "trySpreadingFire(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/util/math/random/Random;I)V",
             at = @At("HEAD"))
     public void spreadToGunpowder(World world, BlockPos pos, int spreadFactor, Random random, int currentAge, CallbackInfo ci) {
         if (world.getBlockState(pos).getBlock() instanceof GunpowderBlock g) {

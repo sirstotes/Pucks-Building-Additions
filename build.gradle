@@ -6,6 +6,10 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+def accesswidener = stonecutter.eval(stonecutter.current.version, ">=1.21.4") ? "1.21.accesswidener"
+		: stonecutter.eval(stonecutter.current.version, ">=1.20") ? "1.20.accesswidener"
+		: "1.19.accesswidener"
+
 base {
 	archivesName = project.archives_base_name
 }
@@ -27,7 +31,11 @@ loom {
 			sourceSet sourceSets.client
 		}
 	}
-
+	runConfigs.all {
+		ideConfigGenerated true // Run configurations are not created for subprojects by default
+		runDir "../../run" // Use a shared run folder and create separate worlds
+	}
+	accessWidenerPath = parent.file("src/main/resources/accesswideners/${accesswidener}")
 }
 
 fabricApi {
@@ -51,7 +59,12 @@ processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand([
+				"minecraft_version": stonecutter.current.version,
+				"version": project.version,
+				"java_version": project.java_version,
+				aw_file: accesswidener
+		])
 	}
 }
 
@@ -64,9 +77,10 @@ java {
 	// if it is present.
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	def java = stonecutter.eval(stonecutter.current.project, ">=1.20.5")
+			? JavaVersion.VERSION_21 : JavaVersion.VERSION_17
+	sourceCompatibility = java
+	targetCompatibility = java
 }
 
 jar {

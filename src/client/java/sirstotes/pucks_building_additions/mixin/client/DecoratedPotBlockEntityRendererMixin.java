@@ -1,10 +1,10 @@
 package sirstotes.pucks_building_additions.mixin.client;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.entity.DecoratedPotBlockEntity;
-import net.minecraft.block.entity.Sherds;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -24,6 +24,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import sirstotes.pucks_building_additions.ColoredDecoratedPotBlockEntity;
 import sirstotes.pucks_building_additions.DecoratedPotBlockEntityRendererInterface;
 import sirstotes.pucks_building_additions.PucksBuildingAdditions;
+/*? if >1.20.1 {*/
+import net.minecraft.block.entity.Sherds;
+/*?} else*/
+/*import net.minecraft.block.entity.DecoratedPotBlockEntity.Sherds;*/
+/**/
 
 import java.util.Optional;
 
@@ -52,6 +57,7 @@ public class DecoratedPotBlockEntityRendererMixin implements DecoratedPotBlockEn
     @Shadow
     private ModelPart bottom;
 
+    /*? if >1.20.1 {*/
     @WrapOperation(method = "render(Lnet/minecraft/block/entity/DecoratedPotBlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/entity/DecoratedPotBlockEntityRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/block/entity/Sherds;)V"))
     public void renderColoredIfColored(DecoratedPotBlockEntityRenderer instance, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Sherds sherds, Operation<Void> original, @Local(argsOnly = true) DecoratedPotBlockEntity decoratedPotBlockEntity) {
@@ -61,6 +67,16 @@ public class DecoratedPotBlockEntityRendererMixin implements DecoratedPotBlockEn
             original.call(instance, matrices, vertexConsumers, light, overlay, sherds);
         }
     }
+    /*?} else {*/
+    /*@WrapMethod(method = "render(Lnet/minecraft/block/entity/DecoratedPotBlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V")
+    public void renderColoredIfColored(DecoratedPotBlockEntity decoratedPotBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j, Operation<Void> original) {
+        if (decoratedPotBlockEntity instanceof ColoredDecoratedPotBlockEntity c) {
+            this.render(matrixStack, vertexConsumerProvider, i, j, decoratedPotBlockEntity.getSherds(), getSpriteIdentifier(c.color, "bottom"), getSpriteIdentifier(c.color, "side"));
+        } else {
+            original.call(decoratedPotBlockEntity, f, matrixStack, vertexConsumerProvider, i, j);
+        }
+    }
+    *//*?}*/
 
 //    @WrapOperation(method = "renderAsItem(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/block/entity/Sherds;)V",
 //    at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/entity/DecoratedPotBlockEntityRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/block/entity/Sherds;)V"))
@@ -84,9 +100,7 @@ public class DecoratedPotBlockEntityRendererMixin implements DecoratedPotBlockEn
             else if (sherd.get() == Items.BURN_POTTERY_SHERD) id = "burn_pottery_pattern";
             else if (sherd.get() == Items.DANGER_POTTERY_SHERD) id = "danger_pottery_pattern";
             else if (sherd.get() == Items.EXPLORER_POTTERY_SHERD) id = "explorer_pottery_pattern";
-            else if (sherd.get() == Items.FLOW_POTTERY_SHERD) id = "flow_pottery_pattern";
             else if (sherd.get() == Items.FRIEND_POTTERY_SHERD) id = "friend_pottery_pattern";
-            else if (sherd.get() == Items.GUSTER_POTTERY_SHERD) id = "guster_pottery_pattern";
             else if (sherd.get() == Items.HEART_POTTERY_SHERD) id = "heart_pottery_pattern";
             else if (sherd.get() == Items.HEARTBREAK_POTTERY_SHERD) id = "heartbreak_pottery_pattern";
             else if (sherd.get() == Items.HOWL_POTTERY_SHERD) id = "howl_pottery_pattern";
@@ -94,11 +108,15 @@ public class DecoratedPotBlockEntityRendererMixin implements DecoratedPotBlockEn
             else if (sherd.get() == Items.MOURNER_POTTERY_SHERD) id = "mourner_pottery_pattern";
             else if (sherd.get() == Items.PLENTY_POTTERY_SHERD) id = "plenty_pottery_pattern";
             else if (sherd.get() == Items.PRIZE_POTTERY_SHERD) id = "prize_pottery_pattern";
-            else if (sherd.get() == Items.SCRAPE_POTTERY_SHERD) id = "scrape_pottery_pattern";
             else if (sherd.get() == Items.SHEAF_POTTERY_SHERD) id = "sheaf_pottery_pattern";
             else if (sherd.get() == Items.SHELTER_POTTERY_SHERD) id = "shelter_pottery_pattern";
             else if (sherd.get() == Items.SKULL_POTTERY_SHERD) id = "skull_pottery_pattern";
             else if (sherd.get() == Items.SNORT_POTTERY_SHERD) id = "snort_pottery_pattern";
+            /*? if >1.20.1 {*/
+            else if (sherd.get() == Items.SCRAPE_POTTERY_SHERD) id = "scrape_pottery_pattern";
+            else if (sherd.get() == Items.GUSTER_POTTERY_SHERD) id = "guster_pottery_pattern";
+            else if (sherd.get() == Items.FLOW_POTTERY_SHERD) id = "flow_pottery_pattern";
+            /*?}*/
             if (id != null) {
                 return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.of(PucksBuildingAdditions.MOD_ID, "block/decorated_pot/"+id));
             }
@@ -107,12 +125,13 @@ public class DecoratedPotBlockEntityRendererMixin implements DecoratedPotBlockEn
         return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.of(PucksBuildingAdditions.MOD_ID, "block/empty"));
     }
 
+    @Unique
     private SpriteIdentifier getSpriteIdentifier(String color, String suffix) {
         return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.of(PucksBuildingAdditions.MOD_ID, "block/decorated_pot/"+color+"_decorated_pot_"+suffix));
     }
 
+    @Unique
     private void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Sherds sherds, SpriteIdentifier topId, SpriteIdentifier sideId) {
-        //VertexConsumer vertexConsumer = TexturedRenderLayers.DECORATED_POT_BASE.getVertexConsumer(vertexConsumers, RenderLayer::getEntitySolid);
         VertexConsumer vertexConsumer = topId.getVertexConsumer(vertexConsumers, RenderLayer::getEntitySolid);
         this.neck.render(matrices, vertexConsumer, light, overlay);
         this.top.render(matrices, vertexConsumer, light, overlay);
@@ -122,10 +141,17 @@ public class DecoratedPotBlockEntityRendererMixin implements DecoratedPotBlockEn
         this.renderDecoratedSide(this.left, matrices, vertexConsumers, light, overlay, sideId);
         this.renderDecoratedSide(this.right, matrices, vertexConsumers, light, overlay, sideId);
 
+        /*? if >1.20.1 {*/
         if (sherds.front().isPresent()) this.renderDecoratedSide2(this.front, matrices, vertexConsumers, light, overlay, getTextureIdFromSherd(sherds.front()));
         if (sherds.back().isPresent()) this.renderDecoratedSide2(this.back, matrices, vertexConsumers, light, overlay, getTextureIdFromSherd(sherds.back()));
         if (sherds.left().isPresent()) this.renderDecoratedSide2(this.left, matrices, vertexConsumers, light, overlay, getTextureIdFromSherd(sherds.left()));
         if (sherds.right().isPresent()) this.renderDecoratedSide2(this.right, matrices, vertexConsumers, light, overlay, getTextureIdFromSherd(sherds.right()));
+        /*?} else {*/
+        /*this.renderDecoratedSide2(this.front, matrices, vertexConsumers, light, overlay, getTextureIdFromSherd(Optional.ofNullable(sherds.front())));
+        this.renderDecoratedSide2(this.back, matrices, vertexConsumers, light, overlay, getTextureIdFromSherd(Optional.ofNullable(sherds.back())));
+        this.renderDecoratedSide2(this.left, matrices, vertexConsumers, light, overlay, getTextureIdFromSherd(Optional.ofNullable(sherds.left())));
+        this.renderDecoratedSide2(this.right, matrices, vertexConsumers, light, overlay, getTextureIdFromSherd(Optional.ofNullable(sherds.right())));
+        *//*?}*/
     }
 
     @Shadow

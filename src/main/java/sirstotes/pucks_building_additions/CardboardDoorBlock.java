@@ -3,12 +3,12 @@ package sirstotes.pucks_building_additions;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+/*? if >1.20.1 {*/
 import net.minecraft.world.block.WireOrientation;
+/*?}*/
 import org.jetbrains.annotations.Nullable;
 
 import static sirstotes.pucks_building_additions.PucksBuildingAdditionsBlocks.CardboardMap;
@@ -17,7 +17,11 @@ public class CardboardDoorBlock extends DoorBlock implements Cardboard {
     private final boolean dry;
 
     public CardboardDoorBlock(Settings settings, boolean dry) {
+        //? if >1.20.1 {
         super(BlockSetType.OAK, settings);
+         /*?} else {*/
+        /*super(settings, BlockSetType.OAK);
+        *//*?}*/
         this.dry = dry;
     }public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
         if (precipitation.equals(Biome.Precipitation.RAIN)) {
@@ -40,13 +44,20 @@ public class CardboardDoorBlock extends DoorBlock implements Cardboard {
             c.dehydrate(world, pos.down());
         }
     }
-    protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         this.update(world, pos);
     }
+    /*? if >1.20.1 {*/
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         this.update(world, pos);
         super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
     }
+    /*?} else {*/
+    /*public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        this.update(world, pos);
+        super.neighborUpdate(state, world, pos, sourceBlock, sourcePos, notify);
+    }
+    *//*?}*/
     protected void update(World world, BlockPos pos) {
         if (!(world.getFluidState(pos.up()).isEmpty() && world.getFluidState(pos.down()).isEmpty() && world.getFluidState(pos.north()).isEmpty() && world.getFluidState(pos.east()).isEmpty() && world.getFluidState(pos.south()).isEmpty() && world.getFluidState(pos.west()).isEmpty())) {
             hydrate(world, pos);

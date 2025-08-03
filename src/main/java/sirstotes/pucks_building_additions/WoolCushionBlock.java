@@ -10,18 +10,17 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class WoolCushionBlock extends SittableBlock {
-    public static final MapCodec<BedBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-        return instance.group(DyeColor.CODEC.fieldOf("color").forGetter(BedBlock::getColor), createSettingsCodec()).apply(instance, BedBlock::new);
-    });
+    //? if >1.20.1 {
+    public static final MapCodec<BedBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color").forGetter(BedBlock::getColor), createSettingsCodec()).apply(instance, BedBlock::new));
     public MapCodec<BedBlock> getCodec() {
         return CODEC;
     }
+    //?}
     private final DyeColor color;
     protected static final VoxelShape BLOCK_SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 4.0, 16.0);
     public WoolCushionBlock(DyeColor color, Settings settings) {
@@ -55,11 +54,11 @@ public class WoolCushionBlock extends SittableBlock {
     }
 
     @Override
-    protected BlockRenderType getRenderType(BlockState state) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return BLOCK_SHAPE;
     }
 

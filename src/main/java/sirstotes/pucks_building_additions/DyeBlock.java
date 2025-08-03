@@ -18,13 +18,23 @@ public class DyeBlock extends WireBlock {
         glowing = glowingVariant;
     }
 
+    /*? if >1.20.1 {*/
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (stack.isOf(Items.GLOW_INK_SAC)) {
             world.setBlockState(pos, glowing.copyState(state));
-            //world.updateNeighbors(pos, glowing);
             return ActionResult.SUCCESS;
         } else {
             return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
         }
+    }/*?} else {*/
+    /*protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        ItemStack stack = player.getStackInHand(player.preferredHand);
+        if (stack.isOf(Items.GLOW_INK_SAC)) {
+            world.setBlockState(pos, glowing.copyState(state));
+            return ActionResult.SUCCESS;
+        } else {
+            return super.onUse(state, world, pos, player, hit);
+        }
     }
+    *//*?}*/
 }

@@ -1,7 +1,5 @@
 package sirstotes.pucks_building_additions;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.WireConnection;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,26 +7,18 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.*;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.*;
-import net.minecraft.world.block.OrientationHelper;
+import org.jetbrains.annotations.Nullable;
+//? if >1.20.1 {
 import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
-import org.jetbrains.annotations.Nullable;
-import org.joml.*;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+/*?}*/
 
 public class WireBlock extends Block {
     public static final EnumProperty<Direction> FACING = Properties.FACING;
@@ -58,7 +48,7 @@ public class WireBlock extends Block {
         this.canFloat = true;
     }
 
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return switch (state.get(FACING).getOpposite()) {
             case DOWN -> DOWN_SHAPE;
             case NORTH -> NORTH_SHAPE;
@@ -124,7 +114,7 @@ public class WireBlock extends Block {
         }
         return state;
     }
-    protected boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         BlockPos baseBlock = WireBlock.getBaseBlock(state, pos);
         if (!canFloat) return canRunOnTop(world, pos.offset(Direction.DOWN), Direction.UP);
         return canRunOnTop(world, baseBlock, getDirectionBetweenBlocks(baseBlock, pos));
@@ -138,7 +128,7 @@ public class WireBlock extends Block {
         if (to.getX() > base.getX()) return Direction.SOUTH;
         if (to.getX() < base.getX()) return Direction.NORTH;
         if (to.getZ() > base.getZ()) return Direction.EAST;
-        return Direction.WEST;//TODO: Double check these values
+        return Direction.WEST;
     }
     public static BlockPos getBaseBlock(BlockState state, BlockPos pos) {
         return pos.offset(state.get(FACING));
@@ -164,32 +154,13 @@ public class WireBlock extends Block {
     public BlockState copyState(BlockState other) {
         return getDefaultState().with(FACING, other.get(FACING)).with(NORTH, other.get(NORTH)).with(SOUTH, other.get(SOUTH)).with(EAST, other.get(EAST)).with(WEST, other.get(WEST)).with(CONNECTED, other.get(CONNECTED));
     }
-//    public static IntProperty getConnectionProperty(BlockState state, Direction direction) {
-//        var angle = state.get(FACING).getUnitVector().rotationTo(Direction.UP.getUnitVector(), Direction.UP.getRotationQuaternion());
-//        var newVec = direction.getUnitVector().rotate(angle);
-//        var dir = Direction.fromVector(new Vec3i((int) newVec.x, (int) newVec.y, (int) newVec.z), Direction.UP);
-//        switch (dir) {
-//            case SOUTH -> {
-//                return NORTH;
-//            }
-//            case EAST -> {
-//                return EAST;
-//            }
-//            case WEST -> {
-//                return WEST;
-//            }
-//            default -> {
-//                return SOUTH;
-//            }
-//        }
-//    }
-//    public static int getConnectionValue(BlockState state, BlockState other, Direction direction) {
-//        return other.get(FACING) == state.get(FACING) ? 1 : 2;
-//    }
     private boolean canRunOnTop(BlockView world, BlockPos pos, Direction facing) {
         return world.getBlockState(pos).isSideSolidFullSquare(world, pos, facing);
     }
 
+
+    /*? if >1.20.1 {*/
+    
     protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
         if (direction == state.get(FACING)) {
             return canRunOnTop(world, neighborPos, direction) ? state : Blocks.AIR.getDefaultState();
@@ -200,15 +171,31 @@ public class WireBlock extends Block {
                 //return state.with(getConnectionProperty(state, direction), getConnectionValue(state, neighborState, direction));
         }
     }
-
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         if (!world.isClient && sourceBlock != this && !state.canPlaceAt(world, pos)) {
             dropStacks(state, world, pos);
             world.removeBlock(pos, false);
         }
     }
+    /*?} else {*/
+    /*public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (direction == state.get(FACING)) {
+            return canRunOnTop(world, neighborPos, direction) ? state : Blocks.AIR.getDefaultState();
+        } else if (direction == state.get(FACING).getOpposite()) {
+            return state;
+        } else {
+            return getPlacementState(state.get(FACING).getOpposite(), pos, world);
+        }
+    }
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        if (!world.isClient && !state.canPlaceAt(world, pos)) {
+            dropStacks(state, world, pos);
+            world.removeBlock(pos, false);
+        }
+    }
+    *//*?}*/
 
-    protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         if (!oldState.isOf(state.getBlock()) && !world.isClient) {
             for(Vec3i vec : NEIGHBORS) {
                 //state.get(FACING).getRotationQuaternion();

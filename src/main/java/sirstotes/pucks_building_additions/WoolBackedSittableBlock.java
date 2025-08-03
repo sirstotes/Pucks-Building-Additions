@@ -3,13 +3,11 @@ package sirstotes.pucks_building_additions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BedBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.state.StateManager;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -18,18 +16,18 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class WoolBackedSittableBlock extends BackedSittableBlock {
+    //? if >1.20.1 {
+    public static final MapCodec<BedBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color").forGetter(BedBlock::getColor), createSettingsCodec()).apply(instance, BedBlock::new));
+    public MapCodec<BedBlock> getCodec() {
+        return CODEC;
+    }
+    //?}
+
+    private final DyeColor color;
     public WoolBackedSittableBlock(DyeColor color, Settings settings) {
         super(settings);
         this.color = color;
     }
-    public static final MapCodec<BedBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-        return instance.group(DyeColor.CODEC.fieldOf("color").forGetter(BedBlock::getColor), createSettingsCodec()).apply(instance, BedBlock::new);
-    });
-    public MapCodec<BedBlock> getCodec() {
-        return CODEC;
-    }
-
-    private final DyeColor color;
 
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
         super.onLandedUpon(world, state, pos, entity, fallDistance * 0.5F);
@@ -57,7 +55,7 @@ public class WoolBackedSittableBlock extends BackedSittableBlock {
     }
 
     @Override
-    protected BlockRenderType getRenderType(BlockState state) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 

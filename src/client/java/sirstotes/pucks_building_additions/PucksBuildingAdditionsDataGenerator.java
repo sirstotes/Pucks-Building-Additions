@@ -1,43 +1,29 @@
 package sirstotes.pucks_building_additions;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.*;
-import net.minecraft.client.data.*;
-import net.minecraft.client.render.item.model.special.DecoratedPotModelRenderer;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.data.family.BlockFamily;
-import net.minecraft.data.recipe.RecipeExporter;
-import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
+import net.minecraft.loot.condition.MatchToolLootCondition;
 import net.minecraft.loot.entry.DynamicEntry;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LeafEntry;
-import net.minecraft.loot.function.CopyComponentsLootFunction;
+import net.minecraft.loot.function.CopyNbtLootFunction;
+import net.minecraft.loot.provider.nbt.ContextLootNbtProvider;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.predicate.StatePredicate;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
@@ -48,9 +34,41 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import static sirstotes.pucks_building_additions.PucksBuildingAdditions.MOD_ID;
 import static sirstotes.pucks_building_additions.PucksBuildingAdditionsBlocks.*;
+/*? if >1.20.1 {*/
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.loot.function.CopyComponentsLootFunction;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraft.client.data.*;
+import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
+import net.minecraft.loot.function.CopyComponentsLootFunction;
+import net.minecraft.predicate.StatePredicate;
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.data.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.data.recipe.RecipeExporter;
+import net.minecraft.data.recipe.RecipeGenerator;
+/*?} else {*/
+/*import net.minecraft.data.client.*;
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
+*//*?}*/
 
 public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypoint {
 	@Override
@@ -65,7 +83,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 	private static class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
 		protected BlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-			super(dataOutput, registryLookup);
+			super(dataOutput/*? if >1.20.1 {*/, registryLookup/*?}*/);
 		}
 
 		@Override
@@ -94,9 +112,11 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			addDrop(CHERRY_BENCH, drops(CHERRY_BENCH));
 			addDrop(CHERRY_SEAT, drops(CHERRY_SEAT));
 			addDrop(CHERRY_STOOL, drops(CHERRY_STOOL));
+			/*? if >1.20.1 {*/
 			addDrop(PALE_OAK_BENCH, drops(PALE_OAK_BENCH));
 			addDrop(PALE_OAK_SEAT, drops(PALE_OAK_SEAT));
 			addDrop(PALE_OAK_STOOL, drops(PALE_OAK_STOOL));
+			/*?}*/
 			addDrop(CRIMSON_BENCH, drops(CRIMSON_BENCH));
 			addDrop(CRIMSON_SEAT, drops(CRIMSON_SEAT));
 			addDrop(CRIMSON_STOOL, drops(CRIMSON_STOOL));
@@ -193,10 +213,12 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			addDrop(REDSTONE_LAMP_BUTTON, drops(REDSTONE_LAMP_BUTTON));
 			addDrop(SEA_LANTERN_BUTTON, drops(SEA_LANTERN_BUTTON));
 			addDrop(SHROOMLIGHT_BUTTON, drops(SHROOMLIGHT_BUTTON));
+			/*? if >1.20.1 {*/
 			addDrop(COPPER_BUTTON, drops(COPPER_BUTTON));
 			addDrop(EXPOSED_COPPER_BUTTON, drops(EXPOSED_COPPER_BUTTON));
 			addDrop(WEATHERED_COPPER_BUTTON, drops(WEATHERED_COPPER_BUTTON));
 			addDrop(OXIDIZED_COPPER_BUTTON, drops(OXIDIZED_COPPER_BUTTON));
+			/*?}*/
 			addDrop(OBSIDIAN_BUTTON, drops(OBSIDIAN_BUTTON));
 			addDrop(PAPER_BLOCK, drops(PAPER_BLOCK));
 			addDrop(WAXED_PAPER_BLOCK, drops(WAXED_PAPER_BLOCK));
@@ -321,75 +343,81 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			addDrop(BLAZE_POWDER, drops(Items.BLAZE_POWDER));
 			addDrop(SUGAR, drops(Items.SUGAR));
 			addDrop(GUNPOWDER, drops(Items.GUNPOWDER));
+			/*? if >1.20.1 {*/
+			addDrop(RED_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(ORANGE_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(YELLOW_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(LIME_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(GREEN_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(CYAN_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(LIGHT_BLUE_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(BLUE_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(PURPLE_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(MAGENTA_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(PINK_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(BROWN_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(WHITE_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(LIGHT_GRAY_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(GRAY_DECORATED_POT, this::decoratedPotDrops);
+			addDrop(BLACK_DECORATED_POT, this::decoratedPotDrops);
+			/*?}*/
 			addColoredPottedPlantDrops(HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(LARGE_FLOWER_POTS);
-			addDrop(RED_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(RED_FLOWER_POTS);
 			addColoredPottedPlantDrops(RED_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(RED_LARGE_FLOWER_POTS);
-			addDrop(ORANGE_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(ORANGE_FLOWER_POTS);
 			addColoredPottedPlantDrops(ORANGE_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(ORANGE_LARGE_FLOWER_POTS);
-			addDrop(YELLOW_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(YELLOW_FLOWER_POTS);
 			addColoredPottedPlantDrops(YELLOW_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(YELLOW_LARGE_FLOWER_POTS);
-			addDrop(LIME_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(LIME_FLOWER_POTS);
 			addColoredPottedPlantDrops(LIME_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(LIME_LARGE_FLOWER_POTS);
-			addDrop(GREEN_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(GREEN_FLOWER_POTS);
 			addColoredPottedPlantDrops(GREEN_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(GREEN_LARGE_FLOWER_POTS);
-			addDrop(CYAN_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(CYAN_FLOWER_POTS);
 			addColoredPottedPlantDrops(CYAN_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(CYAN_LARGE_FLOWER_POTS);
-			addDrop(LIGHT_BLUE_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(LIGHT_BLUE_FLOWER_POTS);
 			addColoredPottedPlantDrops(LIGHT_BLUE_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(LIGHT_BLUE_LARGE_FLOWER_POTS);
-			addDrop(BLUE_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(BLUE_FLOWER_POTS);
 			addColoredPottedPlantDrops(BLUE_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(BLUE_LARGE_FLOWER_POTS);
-			addDrop(PURPLE_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(PURPLE_FLOWER_POTS);
 			addColoredPottedPlantDrops(PURPLE_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(PURPLE_LARGE_FLOWER_POTS);
-			addDrop(MAGENTA_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(MAGENTA_FLOWER_POTS);
 			addColoredPottedPlantDrops(MAGENTA_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(MAGENTA_LARGE_FLOWER_POTS);
-			addDrop(PINK_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(PINK_FLOWER_POTS);
 			addColoredPottedPlantDrops(PINK_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(PINK_LARGE_FLOWER_POTS);
-			addDrop(BROWN_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(BROWN_FLOWER_POTS);
 			addColoredPottedPlantDrops(BROWN_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(BROWN_LARGE_FLOWER_POTS);
-			addDrop(WHITE_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(WHITE_FLOWER_POTS);
 			addColoredPottedPlantDrops(WHITE_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(WHITE_LARGE_FLOWER_POTS);
-			addDrop(LIGHT_GRAY_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(LIGHT_GRAY_FLOWER_POTS);
 			addColoredPottedPlantDrops(LIGHT_GRAY_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(LIGHT_GRAY_LARGE_FLOWER_POTS);
-			addDrop(GRAY_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(GRAY_FLOWER_POTS);
 			addColoredPottedPlantDrops(GRAY_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(GRAY_LARGE_FLOWER_POTS);
-			addDrop(BLACK_DECORATED_POT, this::decoratedPotDrops);
 			addColoredPottedPlantDrops(BLACK_FLOWER_POTS);
 			addColoredPottedPlantDrops(BLACK_HANGING_FLOWER_POTS);
 			addColoredPottedPlantDrops(BLACK_LARGE_FLOWER_POTS);
 		}
 		private LootTable.Builder decoratedPotDrops(Block block) {
+			/*? if >1.20.1 {*/
 			return LootTable.builder().pool(LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F)).with((DynamicEntry.builder(DecoratedPotBlock.SHERDS_DYNAMIC_DROP_ID).conditionally(BlockStatePropertyLootCondition.builder(block).properties(StatePredicate.Builder.create().exactMatch(DecoratedPotBlock.CRACKED, true)))).alternatively(ItemEntry.builder(block).apply(CopyComponentsLootFunction.builder(CopyComponentsLootFunction.Source.BLOCK_ENTITY).include(DataComponentTypes.POT_DECORATIONS)))));
+			/*?} else {*/
+			/*return LootTable.builder().pool(LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F)).with((((LeafEntry.Builder)DynamicEntry.builder(DecoratedPotBlock.SHERDS_DYNAMIC_DROP_ID).conditionally(MatchToolLootCondition.builder(net.minecraft.predicate.item.ItemPredicate.Builder.create().tag(ItemTags.BREAKS_DECORATED_POTS)))).conditionally(WITHOUT_SILK_TOUCH)).alternatively(ItemEntry.builder(block).apply(CopyNbtLootFunction.builder(ContextLootNbtProvider.BLOCK_ENTITY).withOperation("sherds", "BlockEntityTag.sherds")))));
+			*//*?}*/
 		}
 		public void addColoredPottedPlantDrops(ColoredFlowerPotBlock[] blocks) {
 			for (ColoredFlowerPotBlock block : blocks) {
@@ -418,46 +446,50 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 		private ModelGenerator(FabricDataOutput generator) {
 			super(generator);
 		}
+
 		@Override
 		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-			registerSideTopBench(blockStateModelGenerator, OAK_BENCH, "oak_bench", "minecraft:block/stripped_oak_log_top", "minecraft:block/stripped_oak_log");
-			registerSideTopBench(blockStateModelGenerator, SPRUCE_BENCH, "spruce_bench", "minecraft:block/stripped_spruce_log_top", "minecraft:block/stripped_spruce_log");
-			registerSideTopBench(blockStateModelGenerator, BIRCH_BENCH, "birch_bench", "minecraft:block/stripped_birch_log_top", "minecraft:block/stripped_birch_log");
-			registerSideTopBench(blockStateModelGenerator, JUNGLE_BENCH, "jungle_bench", "minecraft:block/stripped_jungle_log_top", "minecraft:block/stripped_jungle_log");
-			registerSideTopBench(blockStateModelGenerator, ACACIA_BENCH, "acacia_bench", "minecraft:block/stripped_acacia_log_top", "minecraft:block/stripped_acacia_log");
-			registerSideTopBench(blockStateModelGenerator, DARK_OAK_BENCH, "dark_oak_bench", "minecraft:block/stripped_dark_oak_log_top", "minecraft:block/stripped_dark_oak_log");
-			registerSideTopBench(blockStateModelGenerator, MANGROVE_BENCH, "mangrove_bench", "minecraft:block/stripped_mangrove_log_top", "minecraft:block/stripped_mangrove_log");
-			registerSideTopBench(blockStateModelGenerator, CHERRY_BENCH, "cherry_bench", "minecraft:block/stripped_cherry_log_top", "minecraft:block/stripped_cherry_log");
-			registerSideTopBench(blockStateModelGenerator, PALE_OAK_BENCH, "pale_oak_bench", "minecraft:block/stripped_pale_oak_log_top", "minecraft:block/stripped_pale_oak_log");
-			registerSideTopBench(blockStateModelGenerator, CRIMSON_BENCH, "crimson_bench", "minecraft:block/stripped_crimson_stem_top", "minecraft:block/stripped_crimson_stem");
-			registerSideTopBench(blockStateModelGenerator, WARPED_BENCH, "warped_bench", "minecraft:block/stripped_warped_stem_top", "minecraft:block/stripped_warped_stem");
-			registerSideTopBench(blockStateModelGenerator, BAMBOO_BENCH, "bamboo_bench", "minecraft:block/bamboo_block_top", "minecraft:block/bamboo_block");
+			registerSideTopBench(blockStateModelGenerator, OAK_BENCH, "oak_bench", ofVanilla("block/stripped_oak_log_top"), ofVanilla("block/stripped_oak_log"));
+			registerSideTopBench(blockStateModelGenerator, SPRUCE_BENCH, "spruce_bench", ofVanilla("block/stripped_spruce_log_top"), ofVanilla("block/stripped_spruce_log"));
+			registerSideTopBench(blockStateModelGenerator, BIRCH_BENCH, "birch_bench", ofVanilla("block/stripped_birch_log_top"), ofVanilla("block/stripped_birch_log"));
+			registerSideTopBench(blockStateModelGenerator, JUNGLE_BENCH, "jungle_bench", ofVanilla("block/stripped_jungle_log_top"), ofVanilla("block/stripped_jungle_log"));
+			registerSideTopBench(blockStateModelGenerator, ACACIA_BENCH, "acacia_bench", ofVanilla("block/stripped_acacia_log_top"), ofVanilla("block/stripped_acacia_log"));
+			registerSideTopBench(blockStateModelGenerator, DARK_OAK_BENCH, "dark_oak_bench", ofVanilla("block/stripped_dark_oak_log_top"), ofVanilla("block/stripped_dark_oak_log"));
+			registerSideTopBench(blockStateModelGenerator, MANGROVE_BENCH, "mangrove_bench", ofVanilla("block/stripped_mangrove_log_top"), ofVanilla("block/stripped_mangrove_log"));
+			registerSideTopBench(blockStateModelGenerator, CHERRY_BENCH, "cherry_bench", ofVanilla("block/stripped_cherry_log_top"), ofVanilla("block/stripped_cherry_log"));
+			//? if >1.20.1
+			registerSideTopBench(blockStateModelGenerator, PALE_OAK_BENCH, "pale_oak_bench", ofVanilla("block/stripped_pale_oak_log_top"), ofVanilla("block/stripped_pale_oak_log"));
+			registerSideTopBench(blockStateModelGenerator, CRIMSON_BENCH, "crimson_bench", ofVanilla("block/stripped_crimson_stem_top"), ofVanilla("block/stripped_crimson_stem"));
+			registerSideTopBench(blockStateModelGenerator, WARPED_BENCH, "warped_bench", ofVanilla("block/stripped_warped_stem_top"), ofVanilla("block/stripped_warped_stem"));
+			registerSideTopBench(blockStateModelGenerator, BAMBOO_BENCH, "bamboo_bench", ofVanilla("block/bamboo_block_top"), ofVanilla("block/bamboo_block"));
 
-			registerSideTopStool(blockStateModelGenerator, OAK_STOOL, "oak_stool", "minecraft:block/stripped_oak_log_top", "minecraft:block/oak_planks");
-			registerSideTopStool(blockStateModelGenerator, SPRUCE_STOOL, "spruce_stool", "minecraft:block/stripped_spruce_log_top", "minecraft:block/spruce_planks");
-			registerSideTopStool(blockStateModelGenerator, BIRCH_STOOL, "birch_stool", "minecraft:block/stripped_birch_log_top", "minecraft:block/birch_planks");
-			registerSideTopStool(blockStateModelGenerator, JUNGLE_STOOL, "jungle_stool", "minecraft:block/stripped_jungle_log_top", "minecraft:block/jungle_planks");
-			registerSideTopStool(blockStateModelGenerator, ACACIA_STOOL, "acacia_stool", "minecraft:block/stripped_acacia_log_top", "minecraft:block/acacia_planks");
-			registerSideTopStool(blockStateModelGenerator, DARK_OAK_STOOL, "dark_oak_stool", "minecraft:block/stripped_dark_oak_log_top", "minecraft:block/dark_oak_planks");
-			registerSideTopStool(blockStateModelGenerator, MANGROVE_STOOL, "mangrove_stool", "minecraft:block/stripped_mangrove_log_top", "minecraft:block/mangrove_planks");
-			registerSideTopStool(blockStateModelGenerator, CHERRY_STOOL, "cherry_stool", "minecraft:block/stripped_cherry_log_top", "minecraft:block/cherry_planks");
-			registerSideTopStool(blockStateModelGenerator, PALE_OAK_STOOL, "pale_oak_stool", "minecraft:block/stripped_pale_oak_log_top", "minecraft:block/pale_oak_planks");
-			registerSideTopStool(blockStateModelGenerator, CRIMSON_STOOL, "crimson_stool", "minecraft:block/stripped_crimson_stem_top", "minecraft:block/crimson_planks");
-			registerSideTopStool(blockStateModelGenerator, WARPED_STOOL, "warped_stool", "minecraft:block/stripped_warped_stem_top", "minecraft:block/warped_planks");
-			registerSideTopStool(blockStateModelGenerator, BAMBOO_STOOL, "bamboo_stool", "minecraft:block/bamboo_block_top", "minecraft:block/bamboo_planks");
+			registerSideTopStool(blockStateModelGenerator, OAK_STOOL, "oak_stool", ofVanilla("block/stripped_oak_log_top"), ofVanilla("block/oak_planks"));
+			registerSideTopStool(blockStateModelGenerator, SPRUCE_STOOL, "spruce_stool", ofVanilla("block/stripped_spruce_log_top"), ofVanilla("block/spruce_planks"));
+			registerSideTopStool(blockStateModelGenerator, BIRCH_STOOL, "birch_stool", ofVanilla("block/stripped_birch_log_top"), ofVanilla("block/birch_planks"));
+			registerSideTopStool(blockStateModelGenerator, JUNGLE_STOOL, "jungle_stool", ofVanilla("block/stripped_jungle_log_top"), ofVanilla("block/jungle_planks"));
+			registerSideTopStool(blockStateModelGenerator, ACACIA_STOOL, "acacia_stool", ofVanilla("block/stripped_acacia_log_top"), ofVanilla("block/acacia_planks"));
+			registerSideTopStool(blockStateModelGenerator, DARK_OAK_STOOL, "dark_oak_stool", ofVanilla("block/stripped_dark_oak_log_top"), ofVanilla("block/dark_oak_planks"));
+			registerSideTopStool(blockStateModelGenerator, MANGROVE_STOOL, "mangrove_stool", ofVanilla("block/stripped_mangrove_log_top"), ofVanilla("block/mangrove_planks"));
+			registerSideTopStool(blockStateModelGenerator, CHERRY_STOOL, "cherry_stool", ofVanilla("block/stripped_cherry_log_top"), ofVanilla("block/cherry_planks"));
+			//? if >1.20.1
+			registerSideTopStool(blockStateModelGenerator, PALE_OAK_STOOL, "pale_oak_stool", ofVanilla("block/stripped_pale_oak_log_top"), ofVanilla("block/pale_oak_planks"));
+			registerSideTopStool(blockStateModelGenerator, CRIMSON_STOOL, "crimson_stool", ofVanilla("block/stripped_crimson_stem_top"), ofVanilla("block/crimson_planks"));
+			registerSideTopStool(blockStateModelGenerator, WARPED_STOOL, "warped_stool", ofVanilla("block/stripped_warped_stem_top"), ofVanilla("block/warped_planks"));
+			registerSideTopStool(blockStateModelGenerator, BAMBOO_STOOL, "bamboo_stool", ofVanilla("block/bamboo_block_top"), ofVanilla("block/bamboo_planks"));
 
-			registerSideTopSeat(blockStateModelGenerator, OAK_SEAT, "oak_seat", "minecraft:block/stripped_oak_log_top", "minecraft:block/stripped_oak_log");
-			registerSideTopSeat(blockStateModelGenerator, SPRUCE_SEAT, "spruce_seat", "minecraft:block/stripped_spruce_log_top", "minecraft:block/stripped_spruce_log");
-			registerSideTopSeat(blockStateModelGenerator, BIRCH_SEAT, "birch_seat", "minecraft:block/stripped_birch_log_top", "minecraft:block/stripped_birch_log");
-			registerSideTopSeat(blockStateModelGenerator, JUNGLE_SEAT, "jungle_seat", "minecraft:block/stripped_jungle_log_top", "minecraft:block/stripped_jungle_log");
-			registerSideTopSeat(blockStateModelGenerator, ACACIA_SEAT, "acacia_seat", "minecraft:block/stripped_acacia_log_top", "minecraft:block/stripped_acacia_log");
-			registerSideTopSeat(blockStateModelGenerator, DARK_OAK_SEAT, "dark_oak_seat", "minecraft:block/stripped_dark_oak_log_top", "minecraft:block/stripped_dark_oak_log");
-			registerSideTopSeat(blockStateModelGenerator, MANGROVE_SEAT, "mangrove_seat", "minecraft:block/stripped_mangrove_log_top", "minecraft:block/stripped_mangrove_log");
-			registerSideTopSeat(blockStateModelGenerator, CHERRY_SEAT, "cherry_seat", "minecraft:block/stripped_cherry_log_top", "minecraft:block/stripped_cherry_log");
-			registerSideTopSeat(blockStateModelGenerator, PALE_OAK_SEAT, "pale_oak_seat", "minecraft:block/stripped_pale_oak_log_top", "minecraft:block/stripped_pale_oak_log");
-			registerSideTopSeat(blockStateModelGenerator, CRIMSON_SEAT, "crimson_seat", "minecraft:block/stripped_crimson_stem_top", "minecraft:block/stripped_crimson_stem");
-			registerSideTopSeat(blockStateModelGenerator, WARPED_SEAT, "warped_seat", "minecraft:block/stripped_warped_stem_top", "minecraft:block/stripped_warped_stem");
-			registerSideTopSeat(blockStateModelGenerator, BAMBOO_SEAT, "bamboo_seat", "minecraft:block/bamboo_block_top", "minecraft:block/bamboo_block");
+			registerSideTopSeat(blockStateModelGenerator, OAK_SEAT, "oak_seat", ofVanilla("block/stripped_oak_log_top"), ofVanilla("block/stripped_oak_log"));
+			registerSideTopSeat(blockStateModelGenerator, SPRUCE_SEAT, "spruce_seat", ofVanilla("block/stripped_spruce_log_top"), ofVanilla("block/stripped_spruce_log"));
+			registerSideTopSeat(blockStateModelGenerator, BIRCH_SEAT, "birch_seat", ofVanilla("block/stripped_birch_log_top"), ofVanilla("block/stripped_birch_log"));
+			registerSideTopSeat(blockStateModelGenerator, JUNGLE_SEAT, "jungle_seat", ofVanilla("block/stripped_jungle_log_top"), ofVanilla("block/stripped_jungle_log"));
+			registerSideTopSeat(blockStateModelGenerator, ACACIA_SEAT, "acacia_seat", ofVanilla("block/stripped_acacia_log_top"), ofVanilla("block/stripped_acacia_log"));
+			registerSideTopSeat(blockStateModelGenerator, DARK_OAK_SEAT, "dark_oak_seat", ofVanilla("block/stripped_dark_oak_log_top"), ofVanilla("block/stripped_dark_oak_log"));
+			registerSideTopSeat(blockStateModelGenerator, MANGROVE_SEAT, "mangrove_seat", ofVanilla("block/stripped_mangrove_log_top"), ofVanilla("block/stripped_mangrove_log"));
+			registerSideTopSeat(blockStateModelGenerator, CHERRY_SEAT, "cherry_seat", ofVanilla("block/stripped_cherry_log_top"), ofVanilla("block/stripped_cherry_log"));
+			//? if >1.20.1
+			registerSideTopSeat(blockStateModelGenerator, PALE_OAK_SEAT, "pale_oak_seat", ofVanilla("block/stripped_pale_oak_log_top"), ofVanilla("block/stripped_pale_oak_log"));
+			registerSideTopSeat(blockStateModelGenerator, CRIMSON_SEAT, "crimson_seat", ofVanilla("block/stripped_crimson_stem_top"), ofVanilla("block/stripped_crimson_stem"));
+			registerSideTopSeat(blockStateModelGenerator, WARPED_SEAT, "warped_seat", ofVanilla("block/stripped_warped_stem_top"), ofVanilla("block/stripped_warped_stem"));
+			registerSideTopSeat(blockStateModelGenerator, BAMBOO_SEAT, "bamboo_seat", ofVanilla("block/bamboo_block_top"), ofVanilla("block/bamboo_block"));
 
 			registerWoolBench(blockStateModelGenerator, RED_OTTOMAN, "red");
 			registerWoolBench(blockStateModelGenerator, ORANGE_OTTOMAN, "orange");
@@ -527,18 +559,24 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			registerWoolStool(blockStateModelGenerator, GRAY_STOOL, "gray");
 			registerWoolStool(blockStateModelGenerator, BLACK_STOOL, "black");
 
-			registerLightButton(blockStateModelGenerator, GLOWSTONE_BUTTON, "glowstone_button", "minecraft:block/glowstone", "pucks_building_additions:block/glowstone_off");
-			registerLightButton(blockStateModelGenerator, VERDANT_FROGLIGHT_BUTTON, "verdant_froglight_button", "minecraft:block/verdant_froglight_side", "pucks_building_additions:block/verdant_froglight_off");
-			registerLightButton(blockStateModelGenerator, PEARLESCENT_FROGLIGHT_BUTTON, "pearlescent_froglight_button", "minecraft:block/pearlescent_froglight_side", "pucks_building_additions:block/pearlescent_froglight_off");
-			registerLightButton(blockStateModelGenerator, OCHRE_FROGLIGHT_BUTTON, "ochre_froglight_button", "minecraft:block/ochre_froglight_side", "pucks_building_additions:block/ochre_froglight_off");
-			registerLightButton(blockStateModelGenerator, REDSTONE_LAMP_BUTTON, "redstone_lamp_button", "minecraft:block/redstone_lamp_on", "minecraft:block/redstone_lamp");
-			registerLightButton(blockStateModelGenerator, SEA_LANTERN_BUTTON, "sea_lantern_button", "minecraft:block/sea_lantern", "pucks_building_additions:block/sea_lantern_off");
-			registerLightButton(blockStateModelGenerator, SHROOMLIGHT_BUTTON, "shroomlight_button", "minecraft:block/shroomlight", "pucks_building_additions:block/shroomlight_off");
-			registerLightButton(blockStateModelGenerator, COPPER_BUTTON, "copper_button", "minecraft:block/copper_bulb_lit", "minecraft:block/copper_bulb");
-			registerLightButton(blockStateModelGenerator, WEATHERED_COPPER_BUTTON, "weathered_copper_button", "minecraft:block/weathered_copper_bulb_lit", "minecraft:block/weathered_copper_bulb");
-			registerLightButton(blockStateModelGenerator, EXPOSED_COPPER_BUTTON, "exposed_copper_button", "minecraft:block/exposed_copper_bulb_lit", "minecraft:block/exposed_copper_bulb");
-			registerLightButton(blockStateModelGenerator, OXIDIZED_COPPER_BUTTON, "oxidized_copper_button", "minecraft:block/oxidized_copper_bulb_lit", "minecraft:block/oxidized_copper_bulb");
-			registerLightButton(blockStateModelGenerator, OBSIDIAN_BUTTON, "obsidian_button", "minecraft:block/crying_obsidian", "minecraft:block/obsidian");
+			registerLightButton(blockStateModelGenerator, GLOWSTONE_BUTTON, "glowstone_button", ofVanilla("block/glowstone"), Identifier.of(MOD_ID, "block/glowstone_off"));
+			registerLightButton(blockStateModelGenerator, VERDANT_FROGLIGHT_BUTTON, "verdant_froglight_button", ofVanilla("block/verdant_froglight_side"), Identifier.of(MOD_ID, "block/verdant_froglight_off"));
+			registerLightButton(blockStateModelGenerator, PEARLESCENT_FROGLIGHT_BUTTON, "pearlescent_froglight_button", ofVanilla("block/pearlescent_froglight_side"), Identifier.of(MOD_ID, "block/pearlescent_froglight_off"));
+			registerLightButton(blockStateModelGenerator, OCHRE_FROGLIGHT_BUTTON, "ochre_froglight_button", ofVanilla("block/ochre_froglight_side"), Identifier.of(MOD_ID, "block/ochre_froglight_off"));
+			registerLightButton(blockStateModelGenerator, REDSTONE_LAMP_BUTTON, "redstone_lamp_button", ofVanilla("block/redstone_lamp_on"), ofVanilla("block/redstone_lamp"));
+			registerLightButton(blockStateModelGenerator, SEA_LANTERN_BUTTON, "sea_lantern_button", ofVanilla("block/sea_lantern"), Identifier.of(MOD_ID, "block/sea_lantern_off"));
+			registerLightButton(blockStateModelGenerator, SHROOMLIGHT_BUTTON, "shroomlight_button", ofVanilla("block/shroomlight"), Identifier.of(MOD_ID, "block/shroomlight_off"));
+			registerLightButton(blockStateModelGenerator, OBSIDIAN_BUTTON, "obsidian_button", ofVanilla("block/crying_obsidian"), ofVanilla("block/obsidian"));
+			/*? if >1.20.1 {*/
+			registerLightButton(blockStateModelGenerator, COPPER_BUTTON, "copper_button", ofVanilla("block/copper_bulb_lit"), ofVanilla("block/copper_bulb"));
+			registerLightButton(blockStateModelGenerator, WEATHERED_COPPER_BUTTON, "weathered_copper_button", ofVanilla("block/weathered_copper_bulb_lit"), ofVanilla("block/weathered_copper_bulb"));
+			registerLightButton(blockStateModelGenerator, EXPOSED_COPPER_BUTTON, "exposed_copper_button", ofVanilla("block/exposed_copper_bulb_lit"), ofVanilla("block/exposed_copper_bulb"));
+			registerLightButton(blockStateModelGenerator, OXIDIZED_COPPER_BUTTON, "oxidized_copper_button", ofVanilla("block/oxidized_copper_bulb_lit"), ofVanilla("block/oxidized_copper_bulb"));
+			registerLightButton(blockStateModelGenerator, WAXED_COPPER_BUTTON, "copper_button", ofVanilla("block/copper_bulb_lit"), ofVanilla("block/copper_bulb"));
+			registerLightButton(blockStateModelGenerator, WAXED_WEATHERED_COPPER_BUTTON, "weathered_copper_button", ofVanilla("block/weathered_copper_bulb_lit"), ofVanilla("block/weathered_copper_bulb"));
+			registerLightButton(blockStateModelGenerator, WAXED_EXPOSED_COPPER_BUTTON, "exposed_copper_button", ofVanilla("block/exposed_copper_bulb_lit"), ofVanilla("block/exposed_copper_bulb"));
+			registerLightButton(blockStateModelGenerator, WAXED_OXIDIZED_COPPER_BUTTON, "oxidized_copper_button", ofVanilla("block/oxidized_copper_bulb_lit"), ofVanilla("block/oxidized_copper_bulb"));
+			/*?}*/
 
 			registerWire(blockStateModelGenerator, RED_DYE, "red_dye", true);
 			registerWire(blockStateModelGenerator, ORANGE_DYE, "orange_dye", true);
@@ -630,7 +668,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			registerHangingFlowerPots(blockStateModelGenerator, LIGHT_GRAY_HANGING_FLOWER_POTS, "light_gray_");
 			registerHangingFlowerPots(blockStateModelGenerator, GRAY_HANGING_FLOWER_POTS, "gray_");
 			registerHangingFlowerPots(blockStateModelGenerator, BLACK_HANGING_FLOWER_POTS, "black_");
-
+			/*? if >1.20.1 {*/
 			registerDecoratedPot(blockStateModelGenerator, RED_DECORATED_POT, "red");
 			registerDecoratedPot(blockStateModelGenerator, ORANGE_DECORATED_POT, "orange");
 			registerDecoratedPot(blockStateModelGenerator, YELLOW_DECORATED_POT, "yellow");
@@ -647,7 +685,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			registerDecoratedPot(blockStateModelGenerator, LIGHT_GRAY_DECORATED_POT, "light_gray");
 			registerDecoratedPot(blockStateModelGenerator, GRAY_DECORATED_POT, "gray");
 			registerDecoratedPot(blockStateModelGenerator, BLACK_DECORATED_POT, "black");
-
+			/*?}*/
 			registerCarpet(blockStateModelGenerator, RED_DECORATIVE_CARPET, "red_decorative_carpet");
 			registerCarpet(blockStateModelGenerator, ORANGE_DECORATIVE_CARPET, "orange_decorative_carpet");
 			registerCarpet(blockStateModelGenerator, YELLOW_DECORATIVE_CARPET, "yellow_decorative_carpet");
@@ -665,22 +703,22 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			registerCarpet(blockStateModelGenerator, GRAY_DECORATIVE_CARPET, "gray_decorative_carpet");
 			registerCarpet(blockStateModelGenerator, BLACK_DECORATIVE_CARPET, "black_decorative_carpet");
 
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.RED_CARPET), "red_", Identifier.ofVanilla("block/red_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.ORANGE_CARPET), "orange_", Identifier.ofVanilla("block/orange_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.YELLOW_CARPET), "yellow_", Identifier.ofVanilla("block/yellow_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.LIME_CARPET), "lime_", Identifier.ofVanilla("block/lime_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.GREEN_CARPET), "green_", Identifier.ofVanilla("block/green_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.CYAN_CARPET), "cyan_", Identifier.ofVanilla("block/cyan_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.LIGHT_BLUE_CARPET), "light_blue_", Identifier.ofVanilla("block/light_blue_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.BLUE_CARPET), "blue_", Identifier.ofVanilla("block/blue_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.PURPLE_CARPET), "purple_", Identifier.ofVanilla("block/purple_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.MAGENTA_CARPET), "magenta_", Identifier.ofVanilla("block/magenta_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.PINK_CARPET), "pink_", Identifier.ofVanilla("block/pink_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.BROWN_CARPET), "brown_", Identifier.ofVanilla("block/brown_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.WHITE_CARPET), "white_", Identifier.ofVanilla("block/white_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.LIGHT_GRAY_CARPET), "light_gray_", Identifier.ofVanilla("block/light_gray_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.GRAY_CARPET), "gray_", Identifier.ofVanilla("block/gray_wool"), true);
-			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.BLACK_CARPET), "black_", Identifier.ofVanilla("block/black_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.RED_CARPET), "red_", ofVanilla("block/red_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.ORANGE_CARPET), "orange_", ofVanilla("block/orange_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.YELLOW_CARPET), "yellow_", ofVanilla("block/yellow_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.LIME_CARPET), "lime_", ofVanilla("block/lime_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.GREEN_CARPET), "green_", ofVanilla("block/green_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.CYAN_CARPET), "cyan_", ofVanilla("block/cyan_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.LIGHT_BLUE_CARPET), "light_blue_", ofVanilla("block/light_blue_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.BLUE_CARPET), "blue_", ofVanilla("block/blue_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.PURPLE_CARPET), "purple_", ofVanilla("block/purple_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.MAGENTA_CARPET), "magenta_", ofVanilla("block/magenta_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.PINK_CARPET), "pink_", ofVanilla("block/pink_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.BROWN_CARPET), "brown_", ofVanilla("block/brown_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.WHITE_CARPET), "white_", ofVanilla("block/white_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.LIGHT_GRAY_CARPET), "light_gray_", ofVanilla("block/light_gray_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.GRAY_CARPET), "gray_", ofVanilla("block/gray_wool"), true);
+			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(Blocks.BLACK_CARPET), "black_", ofVanilla("block/black_wool"), true);
 			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(RED_DECORATIVE_CARPET), "red_decorative_", Identifier.of(MOD_ID, "block/red_decorative_carpet"), false);
 			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(ORANGE_DECORATIVE_CARPET), "orange_decorative_", Identifier.of(MOD_ID, "block/orange_decorative_carpet"), false);
 			registerStairCarpet(blockStateModelGenerator, CarpetsToStairs.get(YELLOW_DECORATIVE_CARPET), "yellow_decorative_", Identifier.of(MOD_ID, "block/yellow_decorative_carpet"), false);
@@ -764,7 +802,12 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
+			/*? if >1.20.1 {*/
+			itemModelGenerator.upload(SAWDUST.asItem(), Models.GENERATED);
 			itemModelGenerator.register(SAWDUST.asItem());
+			/*?} else {*/
+			/*itemModelGenerator.register(SAWDUST.asItem(), Models.GENERATED);
+			*//*?}*/
 		}
 
 		public final void registerSpecialStairs(BlockStateModelGenerator generator, Block block, Identifier bottomTexture, Identifier topTexture, Identifier slabTexture, Identifier slabTexture2, Identifier endTexture, Identifier backTexture, Identifier slabSide2Texture) {
@@ -810,7 +853,11 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			Identifier identifier4 = Models.TEMPLATE_GLASS_PANE_NOSIDE.upload(block, textureMap, generator.modelCollector);
 			Identifier identifier5 = Models.TEMPLATE_GLASS_PANE_NOSIDE_ALT.upload(block, textureMap, generator.modelCollector);
 			if (itemModel != null) {
+				/*? if >1.20.1 {*/
 				generator.registerItemModel(block.asItem(), generator.uploadBlockItemModel(block.asItem(), itemModel));
+				/*?} else {*/
+				/*Models.GENERATED.upload(ModelIds.getItemModelId(block.asItem()), TextureMap.layer0(TextureMap.getId(textureSource)), generator.modelCollector);
+				*//*?}*/
 			}
 			generator.blockStateCollector.accept(MultipartBlockStateSupplier.create(block).with(BlockStateVariant.create().put(VariantSettings.MODEL, identifier)).with(When.create().set(Properties.NORTH, true), BlockStateVariant.create().put(VariantSettings.MODEL, identifier2)).with(When.create().set(Properties.EAST, true), BlockStateVariant.create().put(VariantSettings.MODEL, identifier2).put(VariantSettings.Y, VariantSettings.Rotation.R90)).with(When.create().set(Properties.SOUTH, true), BlockStateVariant.create().put(VariantSettings.MODEL, identifier3)).with(When.create().set(Properties.WEST, true), BlockStateVariant.create().put(VariantSettings.MODEL, identifier3).put(VariantSettings.Y, VariantSettings.Rotation.R90)).with(When.create().set(Properties.NORTH, false), BlockStateVariant.create().put(VariantSettings.MODEL, identifier4)).with(When.create().set(Properties.EAST, false), BlockStateVariant.create().put(VariantSettings.MODEL, identifier5)).with(When.create().set(Properties.SOUTH, false), BlockStateVariant.create().put(VariantSettings.MODEL, identifier5).put(VariantSettings.Y, VariantSettings.Rotation.R90)).with(When.create().set(Properties.WEST, false), BlockStateVariant.create().put(VariantSettings.MODEL, identifier4).put(VariantSettings.Y, VariantSettings.Rotation.R270)));
 		}
@@ -919,7 +966,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							.register(Direction.SOUTH, BlockStateVariant.create().put(VariantSettings.MODEL, id).put(VariantSettings.Y, VariantSettings.Rotation.R0))
 							.register(Direction.WEST, BlockStateVariant.create().put(VariantSettings.MODEL, id).put(VariantSettings.Y, VariantSettings.Rotation.R90))
 					));
-			new Model(Optional.of(Identifier.ofVanilla("block/carpet")), Optional.of(name), wool)
+			new Model(Optional.of(ofVanilla("block/carpet")), Optional.of(name), wool)
 					.upload(id, new TextureMap().put(wool, Identifier.of(MOD_ID, "block/"+name)), blockStateModelGenerator.modelCollector);
 		}
 
@@ -927,7 +974,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			Identifier texture = Identifier.of(MOD_ID, "block/"+color+"_flower_pot");
 			TextureKey pot = TextureKey.of("flowerpot");
 			for (ColoredFlowerPotBlock b : flowerPots) {
-				registerParented(blockStateModelGenerator, b, color+"_"+b.variantName, Identifier.ofVanilla("block/"+b.variantName),
+				registerParented(blockStateModelGenerator, b, color+"_"+b.variantName, ofVanilla("block/"+b.variantName),
 						new TextureMap().put(TextureKey.PARTICLE, texture).put(pot, texture),
 						new TextureKey[] {TextureKey.PARTICLE, pot});
 			}
@@ -980,9 +1027,12 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 		}
 
 		private void registerDecoratedPot(BlockStateModelGenerator blockStateModelGenerator, Block block, String color) {
-			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(block, BlockStateVariant.create().put(VariantSettings.MODEL, Identifier.ofVanilla("block/decorated_pot"))));
-			blockStateModelGenerator.modelCollector.accept(ModelIds.getItemModelId(block.asItem()), () -> getItemModelJSON(String.valueOf(Identifier.ofVanilla("block/decorated_pot")), new Vec3d(30, 45, 0), new Vec3d(0, 0, 0), new Vec3d(0.6, 0.6, 0.6)));
+			blockStateModelGenerator.modelCollector.accept(ModelIds.getItemModelId(block.asItem()), () -> getItemModelJSON(String.valueOf(ofVanilla("block/decorated_pot")), new Vec3d(30, 45, 0), new Vec3d(0, 0, 0), new Vec3d(0.6, 0.6, 0.6)));
+			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(block, BlockStateVariant.create().put(VariantSettings.MODEL, ofVanilla("block/decorated_pot"))));
+
+			/*? if >1.20.1 {*/
 			blockStateModelGenerator.registerSpecialItemModel(block, new ColoredDecoratedPotModelRenderer.Unbaked(color));
+			/*?}*/
 		}
 
 		private void registerParented(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, Identifier parent, TextureMap textureMap, TextureKey[] textureKeys) {
@@ -1030,12 +1080,12 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 					.upload(id_outer, textureMap, blockStateModelGenerator.modelCollector);
 		}
 
-		private void registerLightButton(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, String on_texture, String off_texture) {
+		private void registerLightButton(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, Identifier on_texture, Identifier off_texture) {
 			Identifier normal_id = ModelIds.getBlockModelId(block);
 			Identifier active_id = ModelIds.getBlockSubModelId(block, "_on");
 			Identifier powered_id = ModelIds.getBlockSubModelId(block, "_pressed");
 			blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(block)
-				.coordinate(BlockStateVariantMap.create(Properties.FACING, Properties.POWERED, Properties.ACTIVE)
+				.coordinate(BlockStateVariantMap.create(Properties.FACING, Properties.POWERED, LightButtonBlock.ACTIVE)
 					.register(Direction.DOWN, false, false, BlockStateVariant.create().put(VariantSettings.MODEL, normal_id).put(VariantSettings.X, VariantSettings.Rotation.R180).put(VariantSettings.Y, VariantSettings.Rotation.R270))
 					.register(Direction.DOWN, false, true, BlockStateVariant.create().put(VariantSettings.MODEL, active_id).put(VariantSettings.X, VariantSettings.Rotation.R180).put(VariantSettings.Y, VariantSettings.Rotation.R270))
 					.register(Direction.DOWN, true, false, BlockStateVariant.create().put(VariantSettings.MODEL, powered_id).put(VariantSettings.X, VariantSettings.Rotation.R180).put(VariantSettings.Y, VariantSettings.Rotation.R270))
@@ -1063,11 +1113,11 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			));
 
 			TextureMap textureMap1 = new TextureMap()
-					.put(TextureKey.TEXTURE, Identifier.of(on_texture))
-					.put(TextureKey.PARTICLE, Identifier.of(on_texture));
+					.put(TextureKey.TEXTURE, on_texture)
+					.put(TextureKey.PARTICLE, on_texture);
 			TextureMap textureMap2 = new TextureMap()
-					.put(TextureKey.TEXTURE, Identifier.of(off_texture))
-					.put(TextureKey.PARTICLE, Identifier.of(off_texture));
+					.put(TextureKey.TEXTURE, off_texture)
+					.put(TextureKey.PARTICLE, off_texture);
 
 			new Model(Optional.of(Identifier.of(MOD_ID, "block/light_button_base")), Optional.of(variant), TextureKey.TEXTURE, TextureKey.PARTICLE)
 					.upload(normal_id, textureMap2, blockStateModelGenerator.modelCollector);
@@ -1457,7 +1507,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 					.upload(up_west_id, textureMap3, blockStateModelGenerator.modelCollector);
 		}
 
-		private void registerSideTopBench(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, String top_texture, String side_texture) {
+		private void registerSideTopBench(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, Identifier top_texture, Identifier side_texture) {
 			Identifier id = ModelIds.getBlockModelId(block);
 			blockStateModelGenerator.blockStateCollector
 					.accept(VariantsBlockStateSupplier.create(block)
@@ -1467,16 +1517,16 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							));
 
 			TextureMap textureMap = new TextureMap()
-					.put(TextureKey.TOP, Identifier.of(top_texture))
-					.put(TextureKey.SIDE, Identifier.of(side_texture))
-					.put(TextureKey.PARTICLE, Identifier.of(top_texture));
+					.put(TextureKey.TOP, top_texture)
+					.put(TextureKey.SIDE, side_texture)
+					.put(TextureKey.PARTICLE, top_texture);
 
 			new Model(Optional.of(Identifier.of(MOD_ID, "block/bench_base")), Optional.of(variant), TextureKey.TOP, TextureKey.SIDE, TextureKey.PARTICLE)
 					.upload(id, textureMap, blockStateModelGenerator.modelCollector);
 			blockStateModelGenerator.registerParentedItemModel(block, id);
 		}
 
-		private void registerSideTopStool(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, String top_texture, String side_texture) {
+		private void registerSideTopStool(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, Identifier top_texture, Identifier side_texture) {
 			Identifier id = ModelIds.getBlockModelId(block);
 			blockStateModelGenerator.blockStateCollector
 					.accept(VariantsBlockStateSupplier.create(block)
@@ -1486,16 +1536,16 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							));
 
 			TextureMap textureMap = new TextureMap()
-					.put(TextureKey.TOP, Identifier.of(top_texture))
-					.put(TextureKey.SIDE, Identifier.of(side_texture))
-					.put(TextureKey.PARTICLE, Identifier.of(top_texture));
+					.put(TextureKey.TOP, top_texture)
+					.put(TextureKey.SIDE, side_texture)
+					.put(TextureKey.PARTICLE, top_texture);
 
 			new Model(Optional.of(Identifier.of(MOD_ID, "block/wood_stool_base")), Optional.of(variant), TextureKey.TOP, TextureKey.SIDE, TextureKey.PARTICLE)
 					.upload(id, textureMap, blockStateModelGenerator.modelCollector);
 			blockStateModelGenerator.registerParentedItemModel(block, id);
 		}
 
-		private void registerSideTopSeat(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, String top_texture, String side_texture) {
+		private void registerSideTopSeat(BlockStateModelGenerator blockStateModelGenerator, Block block, String variant, Identifier top_texture, Identifier side_texture) {
 			Identifier normal_id = ModelIds.getBlockModelId(block);
 			Identifier inner_id = ModelIds.getBlockSubModelId(block, "_inner");
 			Identifier outer_id = ModelIds.getBlockSubModelId(block, "_outer");
@@ -1525,9 +1575,9 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							));
 
 			TextureMap textureMap = new TextureMap()
-					.put(TextureKey.TOP, Identifier.of(top_texture))
-					.put(TextureKey.SIDE, Identifier.of(side_texture))
-					.put(TextureKey.PARTICLE, Identifier.of(top_texture));
+					.put(TextureKey.TOP, top_texture)
+					.put(TextureKey.SIDE, side_texture)
+					.put(TextureKey.PARTICLE, top_texture);
 
 			new Model(Optional.of(Identifier.of(MOD_ID, "block/seat_base")), Optional.of(variant), TextureKey.TOP, TextureKey.SIDE, TextureKey.PARTICLE)
 					.upload(normal_id, textureMap, blockStateModelGenerator.modelCollector);
@@ -1549,7 +1599,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 
 			TextureMap textureMap = new TextureMap()
 					.put(TextureKey.TEXTURE, Identifier.of(MOD_ID, "block/" + texture))
-					.put(TextureKey.PARTICLE, Identifier.ofVanilla("block/oak_planks"));
+					.put(TextureKey.PARTICLE, ofVanilla("block/oak_planks"));
 
 			new Model(Optional.of(Identifier.of(MOD_ID, "block/ottoman_base")), Optional.of(texture), TextureKey.TEXTURE, TextureKey.PARTICLE)
 					.upload(id, textureMap, blockStateModelGenerator.modelCollector);
@@ -1567,7 +1617,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 
 			TextureMap textureMap = new TextureMap()
 					.put(TextureKey.TEXTURE, Identifier.of(MOD_ID, "block/" + texture))
-					.put(TextureKey.PARTICLE, Identifier.ofVanilla("block/oak_planks"));
+					.put(TextureKey.PARTICLE, ofVanilla("block/oak_planks"));
 
 			new Model(Optional.of(Identifier.of(MOD_ID, "block/wool_stool_base")), Optional.of(texture), TextureKey.TEXTURE, TextureKey.PARTICLE)
 					.upload(id, textureMap, blockStateModelGenerator.modelCollector);
@@ -1623,7 +1673,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 
 			TextureMap textureMap = new TextureMap()
 					.put(TextureKey.TEXTURE, Identifier.of(MOD_ID, "block/" + texture))
-					.put(TextureKey.PARTICLE, Identifier.ofVanilla("block/oak_planks"));
+					.put(TextureKey.PARTICLE, ofVanilla("block/oak_planks"));
 
 			new Model(Optional.of(Identifier.of(MOD_ID, "block/wool_seat_base")), Optional.of(texture), TextureKey.TEXTURE, TextureKey.PARTICLE)
 					.upload(normal_id, textureMap, blockStateModelGenerator.modelCollector);
@@ -1637,7 +1687,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 
 	private static class RecipeProvider extends FabricRecipeProvider {
 		private RecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(output, registriesFuture);
+			super(output/*? if >1.20.1 {*/, registriesFuture/*?}*/);
 		}
 
 		@Override
@@ -1645,11 +1695,23 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 			return MOD_ID + ":recipe_provider";
 		}
 
+		/*? if >1.20.1 {*/
 		@Override
 		public net.minecraft.data.recipe.RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup lookup, RecipeExporter exporter) {
 			return new RecipeGenerator(lookup, exporter) {
 				@Override
 				public void generate() {
+		/*?} else {*/
+		/*public Consumer<RecipeJsonProvider> exporter;
+		private ShapelessRecipeJsonBuilder createShapeless(RecipeCategory recipeCategory, ItemConvertible output, int i) {
+			return ShapelessRecipeJsonBuilder.create(recipeCategory, output, i);
+		}
+		private ShapedRecipeJsonBuilder createShaped(RecipeCategory recipeCategory, ItemConvertible output, int i) {
+			return ShapedRecipeJsonBuilder.create(recipeCategory, output, i);
+		}
+		public void generate(Consumer< RecipeJsonProvider > exp) {
+			exporter = exp;
+		*//*?}*/
 					offerBench(OAK_BENCH, Items.OAK_SLAB, Items.OAK_PLANKS);
 					offerWoodenSeat(OAK_SEAT, Items.OAK_SLAB, Items.OAK_PLANKS);
 					offerWoodenStool(OAK_STOOL, Items.OAK_SLAB, Items.OAK_PLANKS);
@@ -1674,9 +1736,11 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 					offerBench(CHERRY_BENCH, Items.CHERRY_SLAB, Items.CHERRY_PLANKS);
 					offerWoodenSeat(CHERRY_SEAT, Items.CHERRY_SLAB, Items.CHERRY_PLANKS);
 					offerWoodenStool(CHERRY_STOOL, Items.CHERRY_SLAB, Items.CHERRY_PLANKS);
+					/*? if >1.20.1 {*/
 					offerBench(PALE_OAK_BENCH, Items.PALE_OAK_SLAB, Items.PALE_OAK_PLANKS);
 					offerWoodenSeat(PALE_OAK_SEAT, Items.PALE_OAK_SLAB, Items.PALE_OAK_PLANKS);
 					offerWoodenStool(PALE_OAK_STOOL, Items.PALE_OAK_SLAB, Items.PALE_OAK_PLANKS);
+					/*?}*/
 					offerBench(CRIMSON_BENCH, Items.CRIMSON_SLAB, Items.CRIMSON_PLANKS);
 					offerWoodenSeat(CRIMSON_SEAT, Items.CRIMSON_SLAB, Items.CRIMSON_PLANKS);
 					offerWoodenStool(CRIMSON_STOOL, Items.CRIMSON_SLAB, Items.CRIMSON_PLANKS);
@@ -1704,7 +1768,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 					offerColoredFlowerPot(GRAY_FLOWER_POTS[0], Items.GRAY_DYE, "gray");
 					offerColoredFlowerPot(BLACK_FLOWER_POTS[0], Items.BLACK_DYE, "black");
 
-					createShaped(RecipeCategory.DECORATIONS, LARGE_FLOWER_POTS[0], 1).input('X', Items.BRICK).pattern("X X").pattern("XXX").criterion("has_brick", this.conditionsFromItem(Items.BRICK)).offerTo(exporter);
+					createShaped(RecipeCategory.DECORATIONS, LARGE_FLOWER_POTS[0], 1).input('X', Items.BRICK).pattern("X X").pattern("XXX").criterion("has_brick", /*? if <=1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromItem(Items.BRICK)).offerTo(exporter);
 					offerLargeFlowerPot(RED_LARGE_FLOWER_POTS[0], Items.RED_DYE, "red");
 					offerLargeFlowerPot(ORANGE_LARGE_FLOWER_POTS[0], Items.ORANGE_DYE, "orange");
 					offerLargeFlowerPot(YELLOW_LARGE_FLOWER_POTS[0], Items.YELLOW_DYE, "yellow");
@@ -1829,10 +1893,12 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 					offerButton(REDSTONE_LAMP_BUTTON, Items.REDSTONE_LAMP);
 					offerButton(SEA_LANTERN_BUTTON, Items.SEA_LANTERN);
 					offerButton(SHROOMLIGHT_BUTTON, Items.SHROOMLIGHT);
+					/*? if >1.20.1 {*/
 					offerButton(COPPER_BUTTON, Items.COPPER_BULB);
 					offerButton(EXPOSED_COPPER_BUTTON, Items.EXPOSED_COPPER_BULB);
 					offerButton(WEATHERED_COPPER_BUTTON, Items.WEATHERED_COPPER_BULB);
 					offerButton(OXIDIZED_COPPER_BUTTON, Items.OXIDIZED_COPPER_BULB);
+					/*?}*/
 					offerButton(OBSIDIAN_BUTTON, Items.CRYING_OBSIDIAN);
 
 					createShaped(RecipeCategory.BUILDING_BLOCKS, PAPER_BLOCK, 1)
@@ -1941,33 +2007,37 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							.pattern("#B#")
 							.criterion("has_cardboard_block", conditionsFromItem(CARDBOARD_BLOCK))
 							.offerTo(exporter);
-					createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, CARDBOARD_SLAB, Ingredient.ofItem(CARDBOARD_BLOCK))
+					createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, CARDBOARD_SLAB, Ingredient.ofItems(CARDBOARD_BLOCK))
 							.criterion("has_cardboard_block", conditionsFromItem(CARDBOARD_BLOCK))
 							.offerTo(exporter);
-					createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, WAXED_CARDBOARD_SLAB, Ingredient.ofItem(WAXED_CARDBOARD_BLOCK))
+					createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, WAXED_CARDBOARD_SLAB, Ingredient.ofItems(WAXED_CARDBOARD_BLOCK))
 							.criterion("has_cardboard_block", conditionsFromItem(CARDBOARD_BLOCK))
 							.offerTo(exporter);
-					createStairsRecipe(CARDBOARD_STAIRS, Ingredient.ofItem(CARDBOARD_BLOCK))
+					createStairsRecipe(CARDBOARD_STAIRS, Ingredient.ofItems(CARDBOARD_BLOCK))
 							.criterion("has_cardboard_block", conditionsFromItem(CARDBOARD_BLOCK))
 							.offerTo(exporter);
-					createStairsRecipe(WAXED_CARDBOARD_STAIRS, Ingredient.ofItem(WAXED_CARDBOARD_BLOCK))
+					createStairsRecipe(WAXED_CARDBOARD_STAIRS, Ingredient.ofItems(WAXED_CARDBOARD_BLOCK))
 							.criterion("has_cardboard_block", conditionsFromItem(CARDBOARD_BLOCK))
 							.offerTo(exporter);
-					createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, CARDBOARD_BOX_SLAB, Ingredient.ofItem(CARDBOARD_BOX))
+					createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, CARDBOARD_BOX_SLAB, Ingredient.ofItems(CARDBOARD_BOX))
 							.criterion("has_cardboard_box", conditionsFromItem(CARDBOARD_BLOCK))
 							.offerTo(exporter);
-					createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, WAXED_CARDBOARD_BOX_SLAB, Ingredient.ofItem(WAXED_CARDBOARD_BOX))
+					createSlabRecipe(RecipeCategory.BUILDING_BLOCKS, WAXED_CARDBOARD_BOX_SLAB, Ingredient.ofItems(WAXED_CARDBOARD_BOX))
 							.criterion("has_cardboard_box", conditionsFromItem(CARDBOARD_BLOCK))
 							.offerTo(exporter);
-					createStairsRecipe(CARDBOARD_BOX_STAIRS, Ingredient.ofItem(CARDBOARD_BOX))
+					createStairsRecipe(CARDBOARD_BOX_STAIRS, Ingredient.ofItems(CARDBOARD_BOX))
 							.criterion("has_cardboard_box", conditionsFromItem(CARDBOARD_BOX))
 							.offerTo(exporter);
-					createStairsRecipe(WAXED_CARDBOARD_BOX_STAIRS, Ingredient.ofItem(WAXED_CARDBOARD_BOX))
+					createStairsRecipe(WAXED_CARDBOARD_BOX_STAIRS, Ingredient.ofItems(WAXED_CARDBOARD_BOX))
 							.criterion("has_cardboard_box", conditionsFromItem(CARDBOARD_BOX))
 							.offerTo(exporter);
+					createShapeless(RecipeCategory.MISC, SAWDUST, 4)
+							.input(Items.STICK)
+							.criterion("has_stick", conditionsFromItem(Items.STICK))
+							.offerTo(exporter, "sawdust_from_stick");
 				}
 
-				private void offerCushion(ItemConvertible output, ItemConvertible carpet, ItemConvertible wool) {
+		private void offerCushion(ItemConvertible output, ItemConvertible carpet, ItemConvertible wool) {
 					createShaped(RecipeCategory.DECORATIONS, output, 1)
 							.input('_', carpet)
 							.input('X', wool)
@@ -2016,7 +2086,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							.pattern("XX")
 							.pattern("OO")
 							.group("wood_stool")
-							.criterion("has_planks", this.conditionsFromTag(ItemTags.PLANKS))
+							.criterion("has_planks", /*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromTag(ItemTags.PLANKS))
 							.offerTo(exporter);
 				}
 				private void offerWoodenSeat(ItemConvertible output, ItemConvertible slab, ItemConvertible planks) {
@@ -2027,7 +2097,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							.pattern("XX")
 							.pattern("OO")
 							.group("wood_stool")
-							.criterion("has_planks", this.conditionsFromTag(ItemTags.PLANKS))
+							.criterion("has_planks", /*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromTag(ItemTags.PLANKS))
 							.offerTo(exporter);
 				}
 				private void offerWoodenStool(ItemConvertible output, ItemConvertible slab, ItemConvertible planks) {
@@ -2037,7 +2107,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							.pattern("X")
 							.pattern("O")
 							.group("wood_stool")
-							.criterion("has_planks", this.conditionsFromTag(ItemTags.PLANKS))
+							.criterion("has_planks", /*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromTag(ItemTags.PLANKS))
 							.offerTo(exporter);
 				}
 				private void offerDecorativeCarpet(ItemConvertible output, ItemConvertible carpet, ItemConvertible glazedTerracotta) {
@@ -2045,14 +2115,14 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 							.input(carpet)
 							.input(glazedTerracotta)
 							.group("decorative_carpet")
-							.criterion("has_carpet", this.conditionsFromTag(ItemTags.WOOL_CARPETS))
+							.criterion("has_carpet", /*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromTag(ItemTags.WOOL_CARPETS))
 							.offerTo(this.exporter);
 				}
 				private void offerButton(ItemConvertible output, ItemConvertible material) {
 					createShapeless(RecipeCategory.REDSTONE, output, 1)
 							.input(material)
 							.input(Items.REDSTONE)
-							.criterion("has_redstone", this.conditionsFromItem(Items.REDSTONE))
+							.criterion("has_redstone",/*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromItem(Items.REDSTONE))
 							.group("button")
 							.offerTo(this.exporter);
 				}
@@ -2060,7 +2130,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 					createShapeless(RecipeCategory.DECORATIONS, output, 1)
 							.input(dye)
 							.input(FLOWER_POT_ITEM_TAG)
-							.criterion("has_"+color+"_dye", this.conditionsFromItem(dye))
+							.criterion("has_"+color+"_dye",/*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromItem(dye))
 							.group("flower_pot")
 							.offerTo(this.exporter);
 				}
@@ -2069,28 +2139,29 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 						createShapeless(RecipeCategory.DECORATIONS, output, 1)
 								.input(dye)
 								.input(HANGING_FLOWER_POT_ITEM_TAG)
-								.criterion("has_"+color+"_dye", this.conditionsFromItem(dye))
+								.criterion("has_"+color+"_dye",/*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromItem(dye))
 								.offerTo(this.exporter, color+"_hanging_flower_pot_dyed");
 					}
 					createShaped(RecipeCategory.DECORATIONS, output, 1)
 							.input('U', pot)
-							.input('@', ConventionalItemTags.STRINGS)
+							.input('@', /*? if >1.20.1 {*/ConventionalItemTags.STRINGS/*?} else {*//*Items.STRING*//*?}*/)
 							.pattern(" @ ")
 							.pattern("@ @")
 							.pattern(" U ")
-							.criterion("has_string", this.conditionsFromItem(Items.STRING))
+							.criterion("has_string",/*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromItem(Items.STRING))
 							.offerTo(this.exporter);
 				}
 				private void offerLargeFlowerPot(ItemConvertible output, ItemConvertible dye, String color) {
 					createShapeless(RecipeCategory.DECORATIONS, output, 1)
 							.input(dye)
 							.input(LARGE_FLOWER_POT_ITEM_TAG)
-							.criterion("has_"+color+"_dye", this.conditionsFromItem(dye))
+							.criterion("has_"+color+"_dye",/*? if <= 1.20.1 {*//*RecipeProvider.*//*?}*/conditionsFromItem(dye))
 							.offerTo(this.exporter);
 				}
+			/*? if >1.20.1 {*/
 			};
 		}
-
+		/*?}*/
 	}
 
 	private static class ItemTagGenerator extends FabricTagProvider<Item> {
@@ -2174,6 +2245,7 @@ public class PucksBuildingAdditionsDataGenerator implements DataGeneratorEntrypo
 					.add(DARK_OAK_BENCH).add(DARK_OAK_SEAT).add(DARK_OAK_STOOL)
 					.add(MANGROVE_BENCH).add(MANGROVE_SEAT).add(MANGROVE_STOOL)
 					.add(CHERRY_BENCH).add(CHERRY_SEAT).add(CHERRY_STOOL)
+					//? if >1.20.1
 					.add(PALE_OAK_BENCH).add(PALE_OAK_SEAT).add(PALE_OAK_STOOL)
 					.add(CRIMSON_BENCH).add(CRIMSON_SEAT).add(CRIMSON_STOOL)
 					.add(WARPED_BENCH).add(WARPED_SEAT).add(WARPED_STOOL)

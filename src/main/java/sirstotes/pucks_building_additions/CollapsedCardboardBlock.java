@@ -6,22 +6,28 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+/*? if >1.20.1 {*/
 import net.minecraft.world.block.WireOrientation;
+import net.minecraft.world.tick.ScheduledTickView;
+/*?}*/
 import org.jetbrains.annotations.Nullable;
 
 import static sirstotes.pucks_building_additions.PucksBuildingAdditionsBlocks.CardboardMap;
 
 public class CollapsedCardboardBlock extends FallingBlock implements Cardboard {
+    /*? if >1.20.1 {*/
     @Override
     protected MapCodec<? extends FallingBlock> getCodec() {
         return null;
     }
+    /*?}*/
     private final boolean dry;
     protected static final VoxelShape SHAPE = VoxelShapes.union(
             Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 4.0, 16.0),
@@ -29,7 +35,7 @@ public class CollapsedCardboardBlock extends FallingBlock implements Cardboard {
             Block.createCuboidShape(0.0, 4.0, 15.0, 16.0, 8.0, 16.0),
             Block.createCuboidShape(0.0, 4.0, 1.0, 1.0, 8.0,15.0),
             Block.createCuboidShape(15.0, 4.0, 1.0, 16.0, 8.0,15.0));
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 
@@ -58,14 +64,21 @@ public class CollapsedCardboardBlock extends FallingBlock implements Cardboard {
             c.dehydrate(world, pos.down());
         }
     }
-    protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         this.update(world, pos);
         world.scheduleBlockTick(pos, this, this.getFallDelay());
     }
+    /*? if >1.20.1 {*/
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         this.update(world, pos);
         super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
     }
+    /*?} else {*/
+    /*public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        this.update(world, pos);
+        super.neighborUpdate(state, world, pos, sourceBlock, sourcePos, notify);
+    }
+    *//*?}*/
     protected void update(World world, BlockPos pos) {
         if (!(world.getFluidState(pos.up()).isEmpty() && world.getFluidState(pos.down()).isEmpty() && world.getFluidState(pos.north()).isEmpty() && world.getFluidState(pos.east()).isEmpty() && world.getFluidState(pos.south()).isEmpty() && world.getFluidState(pos.west()).isEmpty())) {
             hydrate(world, pos);

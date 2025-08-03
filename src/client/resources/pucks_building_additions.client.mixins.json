@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BlockColorsMixin",
-    "DecoratedPotBlockEntityRendererMixin",
-    "ExampleClientMixin"
+    "DecoratedPotBlockEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

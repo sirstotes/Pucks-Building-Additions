@@ -3,6 +3,7 @@
   "package": "sirstotes.pucks_building_additions.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BlockEntityTypeMixin",
     "CarpetBlockMixin",
     "FireBlockMixin",
     "ItemMixin",

@@ -25,12 +25,12 @@ public class SittableEntity extends Entity {
     }
 
     @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
+    protected void initDataTracker(/*? if >1.20.1 {*/DataTracker.Builder builder/*?}*/) {
 
     }
 
     @Override
-    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+    public boolean damage(/*? if >1.20.1 {*/ServerWorld world,/*?}*/ DamageSource source, float amount) {
         return false;
     }
 

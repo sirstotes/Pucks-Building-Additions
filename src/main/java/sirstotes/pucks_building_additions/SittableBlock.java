@@ -8,6 +8,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
@@ -32,14 +33,19 @@ public class SittableBlock extends Block implements BlockEntityProvider {
         setDefaultState(stateManager.getDefaultState().with(OCCUPIED, false));
     }
 
+
+    /*? if >1.20.1 {*/
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+     /*?} else {*/
+    /*public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    *//*?}*/
         if (world.isClient) {
-            return ActionResult.SUCCESS_SERVER;
+            return /*? if <1.21.2 {*//*ActionResult.SUCCESS*//*?} else {*/ActionResult.SUCCESS_SERVER/*?}*/;
         } else {
             if(world.getBlockEntity(pos) instanceof SittableBlockEntity) {
                 if (state.get(OCCUPIED)) {
                     //remove villagers if sitting
-                    return ActionResult.SUCCESS_SERVER;
+                    return /*? if <1.21.2 {*//*ActionResult.SUCCESS*//*?} else {*/ActionResult.SUCCESS_SERVER/*?}*/;
                 } else {
                     Entity s = ((SittableBlockEntity) Objects.requireNonNull(world.getBlockEntity(pos))).getSittableEntity();
                     if (player.shouldCancelInteraction()) {
@@ -57,7 +63,7 @@ public class SittableBlock extends Block implements BlockEntityProvider {
         builder.add(OCCUPIED);
     }
 
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return BLOCK_SHAPE;
     }
 

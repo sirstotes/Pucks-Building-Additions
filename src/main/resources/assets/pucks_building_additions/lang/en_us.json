@@ -110,6 +110,10 @@
   "block.pucks_building_additions.exposed_copper_button": "Exposed Copper Button",
   "block.pucks_building_additions.weathered_copper_button": "Weathered Copper Button",
   "block.pucks_building_additions.oxidized_copper_button": "Oxidized Copper Button",
+  "block.pucks_building_additions.waxed_copper_button": "Waxed Copper Button",
+  "block.pucks_building_additions.waxed_exposed_copper_button": "Waxed Exposed Copper Button",
+  "block.pucks_building_additions.waxed_weathered_copper_button": "Waxed Weathered Copper Button",
+  "block.pucks_building_additions.waxed_oxidized_copper_button": "Waxed Oxidized Copper Button",
   "block.pucks_building_additions.obsidian_button": "Obsidian Button",
   "block.pucks_building_additions.red_flower_pot": "Red Flower Pot",
   "block.pucks_building_additions.orange_flower_pot": "Orange Flower Pot",
@@ -233,5 +237,6 @@
   "block.pucks_building_additions.cardboard_gate": "Cardboard Gate",
   "block.pucks_building_additions.waxed_cardboard_gate": "Waxed Cardboard Gate",
   "block.pucks_building_additions.wet_cardboard_gate": "Wet Cardboard Gate",
-  "block.pucks_building_additions.sawdust": "Sawdust"
+  "block.pucks_building_additions.sawdust": "Sawdust",
+  "itemGroup.pucks_building_additions": "Puck's Building Additions"
 }

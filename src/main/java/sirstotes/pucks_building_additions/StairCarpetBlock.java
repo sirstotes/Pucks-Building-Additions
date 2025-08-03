@@ -12,8 +12,11 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+/*? if >1.20.1 {*/
 import net.minecraft.world.tick.ScheduledTickView;
+ /*?}*/
 
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +33,7 @@ public class StairCarpetBlock extends Block {
         super(settings);
     }
 
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         switch (state.get(Properties.STAIR_SHAPE)) {
             case STRAIGHT:
                 if (state.get(Properties.HORIZONTAL_FACING) == Direction.NORTH) {
@@ -86,12 +89,19 @@ public class StairCarpetBlock extends Block {
         return VoxelShapes.empty();
     }
 
+    /*? if >1.20.1 {*/
     protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
         BlockState stair = world.getBlockState(pos.down());
         return !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : getDefaultState().with(Properties.STAIR_SHAPE, stair.get(StairsBlock.SHAPE)).with(Properties.HORIZONTAL_FACING, stair.get(StairsBlock.FACING));
     }
+    /*?} else {*/
+    /*public BlockState getStateForNeighborUpdate(Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        BlockState stair = world.getBlockState(pos.down());
+        return !neighborState.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : getDefaultState().with(Properties.STAIR_SHAPE, stair.get(StairsBlock.SHAPE)).with(Properties.HORIZONTAL_FACING, stair.get(StairsBlock.FACING));
+    }
+    *//*?}*/
 
-    protected boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         BlockState stair = world.getBlockState(pos.down());
         return stair.getBlock() instanceof StairsBlock && stair.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM;
     }

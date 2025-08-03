@@ -31,11 +31,11 @@ public class HangingFlowerPotBlock extends ColoredFlowerPotBlock {
         usesSpecialModel = true;
     }
 
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 
-    protected boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         return Block.sideCoversSmallSquare(world, pos.offset(Direction.UP), Direction.DOWN);
     }
 }

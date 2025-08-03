@@ -8,25 +8,20 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 public class WoolSittableBlock extends SittableBlock {
-    public static final MapCodec<BedBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-        return instance.group(DyeColor.CODEC.fieldOf("color").forGetter(BedBlock::getColor), createSettingsCodec()).apply(instance, BedBlock::new);
-    });
+    //? if >1.20.1 {
+    public static final MapCodec<BedBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(DyeColor.CODEC.fieldOf("color").forGetter(BedBlock::getColor), createSettingsCodec()).apply(instance, BedBlock::new));
     public MapCodec<BedBlock> getCodec() {
         return CODEC;
     }
+    //?}
     private final DyeColor color;
     public WoolSittableBlock(DyeColor color, Settings settings) {
         super(settings);
@@ -59,7 +54,7 @@ public class WoolSittableBlock extends SittableBlock {
     }
 
     @Override
-    protected BlockRenderType getRenderType(BlockState state) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.INVISIBLE;
     }
 

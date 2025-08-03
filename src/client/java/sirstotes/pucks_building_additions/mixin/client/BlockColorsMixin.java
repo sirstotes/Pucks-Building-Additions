@@ -1,24 +1,19 @@
 package sirstotes.pucks_building_additions.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.world.BiomeColors;
-import net.minecraft.world.biome.GrassColors;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import sirstotes.pucks_building_additions.PucksBuildingAdditionsBlocks;
 
 @Mixin (BlockColors.class)
 public class BlockColorsMixin {
     @Inject(method = "create()Lnet/minecraft/client/color/block/BlockColors;", at = @At("TAIL"))
     private static void registerColors(CallbackInfoReturnable<BlockColors> cir, @Local BlockColors blockColors) {
-        blockColors.registerColorProvider((state, world, pos, tintIndex) -> {
-            return world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.getDefaultColor();
-        }, PucksBuildingAdditionsBlocks.RED_FLOWER_POTS[1],
+        blockColors.registerColorProvider((state, world, pos, tintIndex) -> BiomeColors.getGrassColor(world, pos), PucksBuildingAdditionsBlocks.RED_FLOWER_POTS[1],
                 PucksBuildingAdditionsBlocks.ORANGE_FLOWER_POTS[1],
                 PucksBuildingAdditionsBlocks.YELLOW_FLOWER_POTS[1],
                 PucksBuildingAdditionsBlocks.LIME_FLOWER_POTS[1],

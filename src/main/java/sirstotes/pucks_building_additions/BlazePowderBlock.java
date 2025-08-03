@@ -14,7 +14,7 @@ public class BlazePowderBlock extends WireBlock {
         super(settings, false);
     }
 
-    protected void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         if (entity instanceof LivingEntity) {
             entity.setOnFireFor(5);
         }

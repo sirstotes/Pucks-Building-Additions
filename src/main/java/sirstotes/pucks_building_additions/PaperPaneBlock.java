@@ -4,12 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PaneBlock;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+//? if >1.20.1
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,13 +27,13 @@ public class PaperPaneBlock extends PaneBlock {
         }
     }
 
-    protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         this.update(world, pos);
     }
 
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, /*? if >1.20.1 {*/@Nullable WireOrientation wireOrientation/*?} else {*//*BlockPos sourcePos*//*?}*/, boolean notify) {
         this.update(world, pos);
-        super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
+        super.neighborUpdate(state, world, pos, sourceBlock, /*? if >1.20.1 {*/wireOrientation/*?} else {*//*sourcePos*//*?}*/, notify);
     }
 
     protected void update(World world, BlockPos pos) {

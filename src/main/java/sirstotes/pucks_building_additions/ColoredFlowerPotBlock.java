@@ -19,8 +19,10 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
+//? if >1.20.1
 import net.minecraft.world.tick.ScheduledTickView;
 
 import java.util.Map;
@@ -52,7 +54,7 @@ public class ColoredFlowerPotBlock extends Block {
         this.parent = parent;
         this.variantName = variantName;
     }
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
     private Block content = null;
@@ -61,6 +63,30 @@ public class ColoredFlowerPotBlock extends Block {
         return this.content == null || this.content == Blocks.AIR;
     }
 
+    protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state/*? if >1.20.1 {*/, boolean includeData/*?}*/) {
+        return this.isEmpty() ? super.getPickStack(world, pos, state/*? if >1.20.1 {*/, includeData/*?}*/) : new ItemStack(this.content);
+    }
+
+    /*? if >1.20.1 {*/
+    protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
+        return direction == Direction.DOWN && !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, world, tickView, pos, direction, neighborPos, neighborState, random);
+    }
+    /*?} else {*/
+    /*public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        return direction == Direction.DOWN && !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+    }
+    *//*?}*/
+
+    public Block getContent() {
+        return this.content;
+    }
+
+    protected boolean canPathfindThrough(BlockState state, NavigationType type) {
+        return false;
+    }
+
+    /*? if >1.20.1 {*/
+    
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         Item var10 = stack.getItem();
         Block var10000;
@@ -98,22 +124,6 @@ public class ColoredFlowerPotBlock extends Block {
             return ActionResult.SUCCESS;
         }
     }
-    protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
-        return this.isEmpty() ? super.getPickStack(world, pos, state, includeData) : new ItemStack(this.content);
-    }
-
-    protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
-        return direction == Direction.DOWN && !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, world, tickView, pos, direction, neighborPos, neighborState, random);
-    }
-
-    public Block getContent() {
-        return this.content;
-    }
-
-    protected boolean canPathfindThrough(BlockState state, NavigationType type) {
-        return false;
-    }
-
     protected boolean hasRandomTicks(BlockState state) {
         return state.isOf(Blocks.POTTED_OPEN_EYEBLOSSOM) || state.isOf(Blocks.POTTED_CLOSED_EYEBLOSSOM);
     }
@@ -126,7 +136,7 @@ public class ColoredFlowerPotBlock extends Block {
                 world.setBlockState(pos, this.getToggledState(state), 3);
                 EyeblossomBlock.EyeblossomState eyeblossomState = EyeblossomBlock.EyeblossomState.of(bl).getOpposite();
                 eyeblossomState.spawnTrailParticle(world, pos, random);
-                world.playSound((PlayerEntity)null, pos, eyeblossomState.getLongSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, eyeblossomState.getLongSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }
 
@@ -140,4 +150,43 @@ public class ColoredFlowerPotBlock extends Block {
             return state.isOf(Blocks.POTTED_CLOSED_EYEBLOSSOM) ? Blocks.POTTED_OPEN_EYEBLOSSOM.getDefaultState() : state;
         }
     }
+    /*?} else {*/
+    /*public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        ItemStack itemStack = player.getStackInHand(hand);
+        Item item = itemStack.getItem();
+        Block var10000;
+        if (item instanceof BlockItem blockItem) {
+            var10000 = BLOCK_TO_CONTENT_MAP.get(parent).getOrDefault(blockItem.getBlock(), Blocks.AIR);
+        } else {
+            var10000 = Blocks.AIR;
+        }
+
+        BlockState blockState = var10000.getDefaultState();
+        boolean bl = blockState.isOf(Blocks.AIR);
+        boolean bl2 = this.isEmpty();
+        if (bl != bl2) {
+            if (bl2) {
+                world.setBlockState(pos, blockState, 3);
+                player.incrementStat(Stats.POT_FLOWER);
+                if (!player.getAbilities().creativeMode) {
+                    itemStack.decrement(1);
+                }
+            } else {
+                ItemStack itemStack2 = new ItemStack(this.content);
+                if (itemStack.isEmpty()) {
+                    player.setStackInHand(hand, itemStack2);
+                } else if (!player.giveItemStack(itemStack2)) {
+                    player.dropItem(itemStack2, false);
+                }
+
+                world.setBlockState(pos, parent.getDefaultState(), 3);
+            }
+
+            world.emitGameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+            return ActionResult.success(world.isClient);
+        } else {
+            return ActionResult.CONSUME;
+        }
+    }
+    *//*?}*/
 }

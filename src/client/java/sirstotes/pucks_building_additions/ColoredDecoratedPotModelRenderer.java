@@ -1,3 +1,4 @@
+/*? if >1.20.1 {*/
 package sirstotes.pucks_building_additions;
 
 import com.mojang.serialization.Codec;
@@ -26,12 +27,8 @@ public class ColoredDecoratedPotModelRenderer implements SpecialModelRenderer<Sh
         this.blockEntityRenderer = blockEntityRenderer;
         this.color = color;
     }
-
     @Nullable
-    public Sherds getData(ItemStack itemStack) {
-        return itemStack.get(DataComponentTypes.POT_DECORATIONS);
-    }
-
+    public Sherds getData(ItemStack itemStack) {return itemStack.get(DataComponentTypes.POT_DECORATIONS);}
     public void render(@Nullable Sherds sherds, ModelTransformationMode modelTransformationMode, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j, boolean bl) {
         ((DecoratedPotBlockEntityRendererInterface) this.blockEntityRenderer).pucks_Building_Additions$renderAsColoredItem(matrixStack, vertexConsumerProvider, i, j, Objects.requireNonNullElse(sherds, Sherds.DEFAULT), this.color);
     }
@@ -51,3 +48,4 @@ public class ColoredDecoratedPotModelRenderer implements SpecialModelRenderer<Sh
         }
     }
 }
+    /*?}*/
